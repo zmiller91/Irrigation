@@ -27,20 +27,10 @@ unsigned long DP11 = 11;
 unsigned long DP12 = 12;
 unsigned long DP13 = 13;
 
-
-// This arduino supports 3 zones. A zone represents a set of actions
-// and sensors to monitor, water, feed, and illuminate a sections of 
-// plants. Here, zones are just arrays that contain certain pieces of
-// information that are required to controll the actions of a zone.
-
-unsigned long ZONE_01[64];
-unsigned long ZONE_02[64];
-unsigned long ZONE_03[64];
-
 ZoneClass ZONE("Zone 1", DP12, DP11, DP10, AI_00, AI_01, AI_02, AI_03, 
 	64800000, 21600000, /* Light on, Light off */
-	300, 3000, /* Poll on, Poll off */
-	15000, 150); /* Valve on, Peri on */
+	30000, 900000, /* Poll on, Poll off */
+	120000, 15000); /* Valve on, Peri on */
 
 void setup() {
 	Serial.begin(9600);

@@ -23,8 +23,10 @@ class ZoneClass : public BaseZoneClass
 
 	 int m_moisutreAve;
 	 bool m_watering;
+	 unsigned long m_pauseWatering;
 
 	 bool m_polling;
+	 unsigned long m_pollOn;
 	 unsigned long m_pollOff;
 	 unsigned long m_nextPoll;
 
@@ -35,6 +37,8 @@ class ZoneClass : public BaseZoneClass
 	 void irrigate(unsigned long);
 	 void monitor(unsigned long);
 	 void illuminate(unsigned long);
+
+	 void displayMoistureLEDs(int);
 
 	 void mapRegister();
 
