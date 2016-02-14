@@ -12,15 +12,13 @@
 	#include "WProgram.h"
 #endif
 
-const int USER_WATER = 1;
-const int USER_POLL = 2;
-
 class ZoneClass : public BaseZoneClass
 {
  private:
 	 ComponentClass m_light;
 	 ComponentClass m_valve;
 	 ComponentClass m_periPump;
+
 	 SensorClass m_moistureSensor;
 
 	 int m_moisutreAve;
@@ -34,13 +32,10 @@ class ZoneClass : public BaseZoneClass
 	 unsigned long m_lightOff;
 	 unsigned long m_nextDay;
 
-	 void handleLight(unsigned long);
-	 void handlePoll(unsigned long);
-	 void handleWater(unsigned long);
-	 void handlePeriPump(unsigned long);
-	 void handleWTest(unsigned long);
-	 void handlePollTest(unsigned long);
-	 void handleLightTest(unsigned long);
+	 void irrigate(unsigned long);
+	 void monitor(unsigned long);
+	 void illuminate(unsigned long);
+
 	 void mapRegister();
 
  protected:

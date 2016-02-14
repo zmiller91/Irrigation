@@ -38,9 +38,9 @@ unsigned long ZONE_02[64];
 unsigned long ZONE_03[64];
 
 ZoneClass ZONE("Zone 1", DP12, DP11, DP10, AI_00, AI_01, AI_02, AI_03, 
-	250, 250, /* Light on, Light off */
-	600, 600, /* Poll on, Poll off */
-	1200, 1200); /* Valve on, Peri on */
+	64800000, 21600000, /* Light on, Light off */
+	300, 3000, /* Poll on, Poll off */
+	15000, 150); /* Valve on, Peri on */
 
 void setup() {
 	Serial.begin(9600);

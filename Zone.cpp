@@ -43,9 +43,13 @@ void ZoneClass::clearRegister()
 void ZoneClass::execute()
 {
 	unsigned long now = millis();
-	handlePollTest(now);
-	handleLightTest(now); 
-	handleWTest(now);
+
+	// Lifecycle
+	monitor(now);
+	illuminate(now); 
+	irrigate(now);
+
+	// Display
 	mapRegister();
 	putToRegister();
 }
@@ -62,70 +66,7 @@ void ZoneClass::mapRegister()
 	m_bitmask[PERI_PUMP] = m_periPump.getState();
 }
 
-
-/**
-	This method is responsible for scheduling the light. If
-	it sees that there has been no update, it will schedule
-	the light to turn on immediately and finish when the day
-	is over.  From there, the normal schedule is executed.
-*/
-void ZoneClass::handleLight(unsigned long now)
-{
-	if (m_light.getScheduledOn() <= now && now < m_light.getScheduledOff())
-	{
-		m_light.setState(1);
-	}
-
-	else if (m_light.getState() == 1)
-	{
-		m_light.setState(0);
-	}
-
-}
-
-void ZoneClass::handlePoll(unsigned long now)
-{
-	if (m_moistureSensor.getScheduledOn() <= now && now < m_moistureSensor.getScheduledOff())
-	{
-		m_moistureSensor.setState(1);
-		m_moistureSensor.poll();
-	}
-
-	else if (m_moistureSensor.getState() == 1)
-	{
-		m_moistureSensor.setState(0);
-	}
-}
-
-void ZoneClass::handleWater(unsigned long now)
-{
-	if (m_valve.getScheduledOn() <= now && now < m_valve.getScheduledOff())
-	{
-		m_valve.setState(1);
-		Serial.println("Valve opening.");
-	}
-
-	else if (m_valve.getState() == 1)
-	{
-		m_valve.setState(0);
-	}
-}
-
-void ZoneClass::handlePeriPump(unsigned long now)
-{
-	if (m_periPump.getScheduledOn() <= now && now < m_periPump.getScheduledOff())
-	{
-		m_periPump.setState(1);
-		Serial.println("Peri pump On.");
-	}
-
-	else if (m_periPump.getState() == 1)
-	{
-		m_periPump.setState(0);
-	}
-}
-
-void ZoneClass::handleWTest(unsigned long now)
+void ZoneClass::irrigate(unsigned long now)
 {
 
 	// If there is too much moisture in the soil, then there
@@ -146,11 +87,11 @@ void ZoneClass::handleWTest(unsigned long now)
 		m_watering = false;
 	}
 
-	handlePeriPump(now);
-	handleWater(now);
+	m_periPump.handle(now);
+	m_valve.handle(now);
 }
 
-void ZoneClass::handlePollTest(unsigned long now)
+void ZoneClass::monitor(unsigned long now)
 {
 
 	if (!m_polling && m_nextPoll < now) {
@@ -167,10 +108,10 @@ void ZoneClass::handlePollTest(unsigned long now)
 		m_polling = false;
 	}
 
-	handlePoll(now);
+	m_moistureSensor.handle(now);
 }
 
-void ZoneClass::handleLightTest(unsigned long now)
+void ZoneClass::illuminate(unsigned long now)
 {
 
 	if (!m_isDay && m_nextDay < now) {
@@ -185,5 +126,5 @@ void ZoneClass::handleLightTest(unsigned long now)
 		m_isDay = false;
 	}
 
-	handleLight(now);
+	m_light.handle(now);
 }

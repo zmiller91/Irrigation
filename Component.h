@@ -12,9 +12,6 @@
 
 class ComponentClass
 {
-private:
-	bool m_users[5];
-
  protected:
 	 int m_state;
 	 int m_numUsers;
@@ -28,17 +25,12 @@ private:
 	ComponentClass();
 	ComponentClass(String, unsigned long);
 	void schedule(unsigned long, unsigned long);
-	unsigned long getScheduledOn();
-	unsigned long getScheduledOff();
-	void setScheduledOn(unsigned long);
-	void setScheduledOff(unsigned long);
 	int getState();
 	void setState(int);
 	unsigned long getLastUpdate();
-	void use(int);
-	void stopUsing(int);
-	bool isUsing(int);
-	int getNumUsers();
+	unsigned long getScheduledOn();
+	unsigned long getScheduledOff();
+	void handle(unsigned long);
 	String getName();
 };
 

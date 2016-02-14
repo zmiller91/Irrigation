@@ -24,8 +24,8 @@ ComponentClass::ComponentClass(String name, unsigned long timeOn)
 
 void ComponentClass::schedule(unsigned long delay, unsigned long now)
 {
-	setScheduledOn(now + delay);
-	setScheduledOff(getScheduledOn() + m_timeOn);
+	m_scheduledOn = (now + delay);
+	m_scheduledOff = (m_scheduledOn + m_timeOn);
 	m_lastUpdate = millis();
 }
 
@@ -44,18 +44,6 @@ int ComponentClass::getState()
 	return m_state;
 }
 
-void ComponentClass::setScheduledOff(unsigned long schedule)
-{
-	m_scheduledOff = schedule;
-	m_lastUpdate = millis();
-}
-
-void ComponentClass::setScheduledOn(unsigned long schedule)
-{
-	m_scheduledOn = schedule;
-	m_lastUpdate = millis();
-}
-
 void ComponentClass::setState(int state)
 {
 	m_state = state;
@@ -67,35 +55,24 @@ unsigned long ComponentClass::getLastUpdate()
 	return m_lastUpdate;
 }
 
-void ComponentClass::use(int userid)
-{
-	if (m_users[userid] == false)
-	{
-		m_users[userid] = true;
-		m_numUsers += 1;
-	}
-}
-
-void ComponentClass::stopUsing(int userid)
-{
-	if (m_users[userid] == true)
-	{
-		m_users[userid] = false;
-		m_numUsers -= 1;
-	}
-}
-
-bool ComponentClass::isUsing(int userid)
-{
-	return m_users[userid] && m_users[userid] != NULL;
-}
-
-int ComponentClass::getNumUsers()
-{
-	return m_numUsers;
-}
-
 String ComponentClass::getName()
 {
 	return m_name;
+}
+
+
+
+void ComponentClass::handle(unsigned long now)
+{
+	// If the component is scheduled to be on, then turn it on
+
+	if (getScheduledOn() <= now && now < getScheduledOff())
+	{
+		setState(1);
+	}
+
+	else if (getState() == 1)
+	{
+		setState(0);
+	}
 }

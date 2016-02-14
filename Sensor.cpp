@@ -35,12 +35,20 @@ void SensorClass::clearAverage()
 	m_numPolls = 0;
 }
 
-void SensorClass::setPolling(bool polling)
-{
-	m_polling = polling;
-}
+void SensorClass::handle(unsigned long now)
 
-bool SensorClass::isPolling()
+	// If the sensor is scheduled to be on, then turn
+	// it on and poll it's reading. When the sensor is
+	// no longer scheduled, turn it off
 {
-	return m_polling;
+	if (getScheduledOn() <= now && now < getScheduledOff())
+	{
+		setState(1);
+		poll();
+	}
+
+	else if (getState() == 1)
+	{
+		setState(0);
+	}
 }

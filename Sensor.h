@@ -24,9 +24,8 @@ class SensorClass: public ComponentClass
 	 SensorClass(String, unsigned long, int);
 	 int poll(); // returns the result of the poll
 	 float getAverage();
-	 void clearAverage(); // make sure we clear everything before we start polling, we only need to do this for poll periods not watering periods
-	 bool isPolling();
-	 void setPolling(bool);
+	 void clearAverage(); 
+	 void handle(unsigned long now);
 };
 
 extern SensorClass Sensor;
