@@ -18,6 +18,10 @@ class ZoneClass : public BaseZoneClass
 	 ComponentClass m_light;
 	 ComponentClass m_valve;
 	 ComponentClass m_periPump;
+	 ComponentClass m_mixer;
+	 ComponentClass m_waterPump;
+	 ComponentClass m_phUp;
+	 ComponentClass m_phDown;
 
 	 SensorClass m_moistureSensor;
 
@@ -51,6 +55,7 @@ class ZoneClass : public BaseZoneClass
 
 	 ZoneClass(String, int, int, int, int, int, int, int, 
 		 unsigned long, unsigned long, unsigned long, unsigned long,
+		 unsigned long, unsigned long, unsigned long, unsigned long, 
 		 unsigned long, unsigned long);
 
 	 void execute();

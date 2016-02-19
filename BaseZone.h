@@ -83,6 +83,10 @@ protected:
 	unsigned long PERI_PUMP = REG_02;
 	unsigned long SOLENOID_PWR = REG_03;
 	unsigned long LIGHT_PWR = REG_04;
+	unsigned long MIXER_PWR = REG_05;
+	unsigned long PUMP_PWR = REG_06;
+	unsigned long PHUP_PWR = REG_07;
+	unsigned long PHDOWN_PWR = REG_08;
 
 	// Map zone sensors to register
 	int MOISTURE_SENSOR;
