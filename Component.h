@@ -10,7 +10,7 @@
 #endif
 
 
-class ComponentClass
+class Component
 {
  protected:
 	 int m_state;
@@ -19,11 +19,11 @@ class ComponentClass
 	 unsigned long m_scheduledOn;
 	 unsigned long m_scheduledOff;
 	 unsigned long m_lastUpdate;
-	 String m_name;
+	 int m_id;
 
  public:
-	ComponentClass();
-	ComponentClass(String, unsigned long);
+	Component();
+	Component(int, unsigned long);
 	void schedule(unsigned long, unsigned long);
 	int getState();
 	void setState(int);
@@ -31,10 +31,9 @@ class ComponentClass
 	unsigned long getScheduledOn();
 	unsigned long getScheduledOff();
 	void handle(unsigned long);
-	String getName();
+	int getId();
 };
 
-extern ComponentClass Component;
 
 #endif
 

@@ -4,8 +4,8 @@
 
 #include "Zone.h"
 
-ZoneClass::ZoneClass(){};
-ZoneClass::ZoneClass(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity, 
+Zone::Zone(){};
+Zone::Zone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity, 
 	unsigned long lightOn, unsigned long lightOff,
 	unsigned long pollOn, unsigned long pollOff,
 	unsigned long valveOn, unsigned long periPumpOn,
@@ -13,15 +13,15 @@ ZoneClass::ZoneClass(String name, int data, int latch, int clock, int moisture, 
 	unsigned long phUpOn, unsigned long phDownOn) :
 
 	// Construct member objects
-	BaseZoneClass(name, data, latch, clock, moisture, photo, temp, humidity),
-	m_light("light", lightOn), // start now and turn off after a day
-	m_valve("valve", valveOn), // start off and turn on after a duration
-	m_periPump("peri_pump", periPumpOn), // start off and turn on after a duration
-	m_moistureSensor("moisture_sensor", pollOn, moisture), // start now and turn off after a poll
-	m_mixer("m_mixer", mixerOn),
-	m_waterPump("m_waterPump", pumpOn),
-	m_phUp("m_phUp", phUpOn),
-	m_phDown("m_phDown", phDownOn)
+	BaseZone(name, data, latch, clock, moisture, photo, temp, humidity),
+	m_light(LIGHT_ID, lightOn), 
+	m_valve(SOLENOID_ID, valveOn), 
+	m_periPump(PERI_PUMP_ID, periPumpOn), 
+	m_moistureSensor(MOISTURE_SENSOR_ID, pollOn, moisture), 
+	m_mixer(MIXER_ID, mixerOn),
+	m_waterPump(PUMP_ID, pumpOn),
+	m_phUp(PHUP_ID, phUpOn),
+	m_phDown(PHDOWN_ID, phDownOn)
 {
 	m_moisutreAve = 1000;
 	m_watering = false;
@@ -37,7 +37,7 @@ ZoneClass::ZoneClass(String name, int data, int latch, int clock, int moisture, 
 	m_nextDay = millis();
 }
 
-void ZoneClass::clearRegister()
+void Zone::clearRegister()
 {
 	for (int i = 0; i < NUM_BITS; i++)
 	{
@@ -48,7 +48,7 @@ void ZoneClass::clearRegister()
 }
 
 // Main function. This gets executed in loop()
-void ZoneClass::execute()
+void Zone::execute()
 {
 	unsigned long now = millis();
 
@@ -66,7 +66,7 @@ void ZoneClass::execute()
 	This method takes all outputs and maps them to the
 	registers. 
 */
-void ZoneClass::mapRegister()
+void Zone::mapRegister()
 {
 	m_bitmask[LIGHT_PWR] = m_light.getState();
 	m_bitmask[MOISTURE_SENSOR] = m_moistureSensor.getState();
@@ -79,7 +79,7 @@ void ZoneClass::mapRegister()
 
 }
 
-void ZoneClass::irrigate(unsigned long now)
+void Zone::irrigate(unsigned long now)
 {
 
 	// If there is too much moisture in the soil, then there
@@ -90,9 +90,12 @@ void ZoneClass::irrigate(unsigned long now)
 	if (m_pauseWatering < now)
 	{
 		//if (!m_watering) {  // uncomment this line when testing
-		if (!m_watering && m_moisutreAve < 300) {         // comment this line when testing
+		if (!m_watering && m_moisutreAve < 450) {         // comment this line when testing
 
-			Serial.println("Turning irrigation on.");
+			// Notify serial that irrigation is starting
+			Serial.print(IRRIGATE_ID);
+			Serial.print(":");
+			Serial.println(1);
 
 			// Open the valve and turn on the pump in order to get water from
 			// the resovior to the preperation container
@@ -143,24 +146,32 @@ void ZoneClass::irrigate(unsigned long now)
 			m_pauseWatering = now + m_pollOff + m_pollOn + 1000; // 1000 for error margin
 			m_watering = false;
 
-			Serial.println("Turning irrigation off.");
+			// Notify serial irrigation is stopping
+			Serial.print(IRRIGATE_ID);
+			Serial.print(":");
+			Serial.println(0);
 		}
 
-		m_periPump.handle(now);
-		m_valve.handle(now);
-		m_mixer.handle(now);
+
 		m_waterPump.handle(now);
+		m_periPump.handle(now);
+		m_mixer.handle(now);
 		m_phDown.handle(now);
 		m_phUp.handle(now);
+		m_mixer.handle(now);
+		m_valve.handle(now);
 	}
 }
 
-void ZoneClass::monitor(unsigned long now)
+void Zone::monitor(unsigned long now)
 {
 
 	if (!m_polling && m_nextPoll < now) {
 
-		Serial.println("Turning poll on.");
+		// Nofiy serial that poll is turning on
+		Serial.print(POLL_ID);
+		Serial.print(":");
+		Serial.println(1);
 
 		m_moistureSensor.clearAverage();
 		m_moistureSensor.schedule(0, now);
@@ -169,11 +180,17 @@ void ZoneClass::monitor(unsigned long now)
 
 	else if (m_polling && m_moistureSensor.getState() == 0)
 	{
-		Serial.println("Turning poll off.");
+		// Nofiy serial that poll is turning off
+		Serial.print(POLL_ID);
+		Serial.print(":");
+		Serial.println(0);
 
 		m_moisutreAve = m_moistureSensor.getAverage();
 
-		Serial.print("Moisture reading: ");
+		// Nofiy serial of the moisture reading
+
+		Serial.print(MOISTURE_SENSOR_ID);
+		Serial.print(":");
 		Serial.println(m_moisutreAve);
 
 		displayMoistureLEDs(m_moisutreAve);
@@ -184,18 +201,27 @@ void ZoneClass::monitor(unsigned long now)
 	m_moistureSensor.handle(now);
 }
 
-void ZoneClass::illuminate(unsigned long now)
+void Zone::illuminate(unsigned long now)
 {
 
-	if (!m_isDay && m_nextDay < now) {
-		Serial.println("Turning light on.");
+	if (!m_isDay && m_nextDay < now) 
+	{	
+		// Notify serial that light is turning on
+		Serial.print(ILLUMINATE_ID);
+		Serial.print(":");
+		Serial.println(1);
+
 		m_light.schedule(0, now);
 		m_isDay = true;
 	}
 
 	else if (m_isDay && m_light.getState() == 0)
 	{
-		Serial.println("Turning light off.");
+		// Nofiy serial light is turning off
+		Serial.print(ILLUMINATE_ID);
+		Serial.print(":");
+		Serial.println(0);
+
 		m_nextDay = now + m_lightOff;
 		m_isDay = false;
 	}
@@ -203,7 +229,7 @@ void ZoneClass::illuminate(unsigned long now)
 	m_light.handle(now);
 }
 
-void ZoneClass::displayMoistureLEDs(int level)
+void Zone::displayMoistureLEDs(int level)
 {
 
 	// 0 is the minimum reading and 550 is the maximum reading. 

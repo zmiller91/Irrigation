@@ -5,16 +5,16 @@
 #include "Component.h"
 #include "MemoryFree.h"
 
-ComponentClass::ComponentClass() {
+Component::Component() {
 	m_scheduledOn = 100;
 	m_scheduledOff = 10000;
 };
-ComponentClass::ComponentClass(String name, unsigned long timeOn)
+Component::Component(int id, unsigned long timeOn)
 {
 	Serial.begin(9600);
 	Serial.println(freeMemory());
 
-	m_name = name;
+	m_id = id;
 	m_timeOn = timeOn;
 	m_scheduledOn = 0;
 	m_scheduledOff = 0;
@@ -22,57 +22,69 @@ ComponentClass::ComponentClass(String name, unsigned long timeOn)
 	m_lastUpdate = 0;
 }
 
-void ComponentClass::schedule(unsigned long delay, unsigned long now)
+void Component::schedule(unsigned long delay, unsigned long now)
 {
 	m_scheduledOn = (now + delay);
 	m_scheduledOff = (m_scheduledOn + m_timeOn);
 	m_lastUpdate = millis();
 }
 
-unsigned long ComponentClass::getScheduledOff()
+unsigned long Component::getScheduledOff()
 {
 	return m_scheduledOff;
 }
 
-unsigned long ComponentClass::getScheduledOn()
+unsigned long Component::getScheduledOn()
 {
 	return m_scheduledOn;
 }
 
-int ComponentClass::getState()
+int Component::getState()
 {
 	return m_state;
 }
 
-void ComponentClass::setState(int state)
+void Component::setState(int state)
 {
 	m_state = state;
 	m_lastUpdate = millis();
 }
 
-unsigned long ComponentClass::getLastUpdate()
+unsigned long Component::getLastUpdate()
 {
 	return m_lastUpdate;
 }
 
-String ComponentClass::getName()
+int Component::getId()
 {
-	return m_name;
+	return m_id;
 }
 
-
-
-void ComponentClass::handle(unsigned long now)
+void Component::handle(unsigned long now)
 {
 	// If the component is scheduled to be on, then turn it on
 
 	if (getScheduledOn() <= now && now < getScheduledOff())
 	{
+
+		// If the current state is off, then notify serial
+		// of a state change
+		if (getState() == 0)
+		{
+			Serial.print(m_id);
+			Serial.print(":");
+			Serial.println(1);
+		}
+
 		setState(1);
 	}
 
 	else if (getState() == 1)
 	{
+		Serial.print(m_id);
+		Serial.print(":");
+		Serial.println(0);
+
 		setState(0);
 	}
 }

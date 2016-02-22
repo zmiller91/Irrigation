@@ -4,11 +4,11 @@
 
 #include "Sensor.h"
 
-SensorClass::SensorClass() {};
-SensorClass::SensorClass(String name, unsigned long scheduledOn, int analogPin):
+Sensor::Sensor() {};
+Sensor::Sensor(int id, unsigned long scheduledOn, int analogPin):
 
 	// Construct super class
-	ComponentClass(name, scheduledOn)
+	Component(id, scheduledOn)
 {
 	m_analogPin = analogPin;
 	m_numPolls = 0;
@@ -16,7 +16,7 @@ SensorClass::SensorClass(String name, unsigned long scheduledOn, int analogPin):
 	m_polling = false;
 }
 
-int SensorClass::poll()
+int Sensor::poll()
 {
 	int read = analogRead(m_analogPin);
 	m_sumPolls += read;
@@ -24,18 +24,18 @@ int SensorClass::poll()
 	return read;
 }
 
-float SensorClass::getAverage()
+float Sensor::getAverage()
 {
 	return m_sumPolls / m_numPolls;
 }
 
-void SensorClass::clearAverage()
+void Sensor::clearAverage()
 {
 	m_sumPolls = 0;
 	m_numPolls = 0;
 }
 
-void SensorClass::handle(unsigned long now)
+void Sensor::handle(unsigned long now)
 
 	// If the sensor is scheduled to be on, then turn
 	// it on and poll it's reading. When the sensor is
@@ -43,12 +43,24 @@ void SensorClass::handle(unsigned long now)
 {
 	if (getScheduledOn() <= now && now < getScheduledOff())
 	{
+
+		if (getState() == 0)
+		{
+			Serial.print(m_id);
+			Serial.print(":");
+			Serial.println(1);
+		}
+
 		setState(1);
 		poll();
 	}
 
 	else if (getState() == 1)
 	{
+		Serial.print(m_id);
+		Serial.print(":");
+		Serial.println(0);
+
 		setState(0);
 	}
 }

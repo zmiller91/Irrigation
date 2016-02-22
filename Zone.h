@@ -12,18 +12,18 @@
 	#include "WProgram.h"
 #endif
 
-class ZoneClass : public BaseZoneClass
+class Zone : public BaseZone
 {
  private:
-	 ComponentClass m_light;
-	 ComponentClass m_valve;
-	 ComponentClass m_periPump;
-	 ComponentClass m_mixer;
-	 ComponentClass m_waterPump;
-	 ComponentClass m_phUp;
-	 ComponentClass m_phDown;
+	 Component m_light;
+	 Component m_valve;
+	 Component m_periPump;
+	 Component m_mixer;
+	 Component m_waterPump;
+	 Component m_phUp;
+	 Component m_phDown;
 
-	 SensorClass m_moistureSensor;
+	 Sensor m_moistureSensor;
 
 	 int m_moisutreAve;
 	 bool m_watering;
@@ -51,9 +51,9 @@ class ZoneClass : public BaseZoneClass
 
  public:
 
-	 ZoneClass();
+	 Zone();
 
-	 ZoneClass(String, int, int, int, int, int, int, int, 
+	 Zone(String, int, int, int, int, int, int, int, 
 		 unsigned long, unsigned long, unsigned long, unsigned long,
 		 unsigned long, unsigned long, unsigned long, unsigned long, 
 		 unsigned long, unsigned long);
@@ -61,8 +61,6 @@ class ZoneClass : public BaseZoneClass
 	 void execute();
 	 void clearRegister();
 };
-
-extern ZoneClass Zone;
 
 #endif
 

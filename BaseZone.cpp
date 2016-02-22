@@ -4,9 +4,9 @@
 
 #include "BaseZone.h"
 
-BaseZoneClass::BaseZoneClass(){}
+BaseZone::BaseZone(){}
 
-BaseZoneClass::BaseZoneClass(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity)
+BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity)
 {
 	m_name = name;
 	// initialize data pins and analogin inputs
@@ -29,7 +29,7 @@ BaseZoneClass::BaseZoneClass(String name, int data, int latch, int clock, int mo
 	pinMode(humidity, INPUT);
 }
 
-void BaseZoneClass::test()
+void BaseZone::test()
 {
 	ledOneByOne(250);
 	for (int i = 0; i < 3; i++) {
@@ -37,7 +37,7 @@ void BaseZoneClass::test()
 	}
 }
 
-void BaseZoneClass::ledOneByOne(int wait) {
+void BaseZone::ledOneByOne(int wait) {
 	int numBits = NUM_REGISTERS * 8;
 	int prevBit = 0;
 	for (int bit = 0; bit < numBits; bit++) {
@@ -53,7 +53,7 @@ void BaseZoneClass::ledOneByOne(int wait) {
 
 
 
-void BaseZoneClass::ledBlink(int wait) {
+void BaseZone::ledBlink(int wait) {
 	int numBits = NUM_REGISTERS * 8;
 	for (int bit = 0; bit < numBits; bit++) {
 		m_bitmask[bit] = 1;
@@ -67,7 +67,7 @@ void BaseZoneClass::ledBlink(int wait) {
 	delay(wait);
 }
 
-void BaseZoneClass::putToRegister() {
+void BaseZone::putToRegister() {
 
 	// Begin to write to the registers
 	digitalWrite(LATCH_PIN, 0);

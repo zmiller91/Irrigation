@@ -11,7 +11,7 @@
 
 #include "Component.h"
 
-class SensorClass: public ComponentClass
+class Sensor: public Component
 {
  protected:
 	 int m_analogPin;
@@ -20,15 +20,13 @@ class SensorClass: public ComponentClass
 	 bool m_polling;
 
  public:
-	 SensorClass();
-	 SensorClass(String, unsigned long, int);
+	 Sensor();
+	 Sensor(int, unsigned long, int);
 	 int poll(); // returns the result of the poll
 	 float getAverage();
 	 void clearAverage(); 
 	 void handle(unsigned long now);
 };
-
-extern SensorClass Sensor;
 
 #endif
 
