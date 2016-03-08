@@ -22,10 +22,16 @@ class Zone : public BaseZone
 	 Component m_waterPump;
 	 Component m_phUp;
 	 Component m_phDown;
+	 Component m_fan;
 
 	 Sensor m_moistureSensor;
+	 Sensor m_photoresistor;
+	 Sensor m_tempSensor;
 
 	 int m_moisutreAve;
+	 int m_photoAve;
+	 int m_tempAve;
+
 	 bool m_watering;
 	 unsigned long m_pauseWatering;
 
@@ -38,11 +44,16 @@ class Zone : public BaseZone
 	 unsigned long m_lightOff;
 	 unsigned long m_nextDay;
 
+	 bool isIrrigating();
+
 	 void irrigate(unsigned long);
+	 void controlTemp(unsigned long);
 	 void monitor(unsigned long);
 	 void illuminate(unsigned long);
+	 void handleComponents(unsigned long);
 
 	 void displayMoistureLEDs(int);
+	 void displayTempLEDs(int);
 
 	 void mapRegister();
 

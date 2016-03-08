@@ -39,6 +39,9 @@
     <ClInclude Include="MemoryFree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CustomSerial.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseZone.cpp">
@@ -57,6 +60,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MemoryFree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomSerial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

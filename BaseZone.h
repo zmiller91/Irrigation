@@ -18,7 +18,6 @@ protected:
 	int m_bitmask[24];
 	void putToRegister();
 	void ledOneByOne(int);
-	void ledBlink(int);
 	int NUM_REGISTERS;
 	String m_name;
 
@@ -89,6 +88,7 @@ protected:
 	int PHUP_PWR = REG_06;
 	int SOLENOID_PWR = REG_07;
 	int LIGHT_PWR = REG_08;
+	int FAN_PWR = REG_09;
 
 	// Map zone sensors to register
 	int MOISTURE_SENSOR;
@@ -115,6 +115,7 @@ protected:
 	int PHUP_ID = 1004;
 	int SOLENOID_ID = 1005;
 	int LIGHT_ID = 1006;
+	int FAN_ID = 1007;
 
 	// Action IDs. All action IDs start with 2000
 	int POLL_ID = 2000;
@@ -123,6 +124,8 @@ protected:
 
 	// Sensor IDs. All sensor IDs start with 3000
 	int MOISTURE_SENSOR_ID = 3000;
+	int PHOTORESISTOR_ID = 3001;
+	int TEMP_SENSOR_ID = 3002;
 
 	// Admin/Debug/Other IDs.  All these IDs start with 4000
 	int MEM_USAGE_ID = 4000;
@@ -131,9 +134,11 @@ public:
 	BaseZone();
 	BaseZone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity);
 	void test();
+	void allOn();
+	void allOff();
+	void ledBlink(int);
+	void notifySerial(int, int);
 };
-
-extern BaseZone BaseZone;
 
 #endif
 

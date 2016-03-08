@@ -27,10 +27,10 @@ unsigned long DP11 = 11;
 unsigned long DP12 = 12;
 unsigned long DP13 = 13;
 
-Zone ZONE("Zone 1", DP12, DP11, DP10, AI_00, AI_01, AI_02, AI_03, 
+Zone ZONE("Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03, 
 	64800000, 21600000, /* Light on, Light off */
-	30000, 900000, /* Poll on, Poll off -- 30000, 900000 */
-	2750, 1000,  2000, 5000, 500, 500); /* Valve on, Peri on, Mixer on, Pump on, phUp on, phDown on */
+	30000, 320000, /* Poll on, Poll off -- 30000, 900000 */
+	2750, 1000,  0, 0, 0, 0); /* Valve on, Peri on, Mixer on, Pump on, phUp on, phDown on */
 
 void setup() {
 	Serial.begin(9600);
@@ -38,6 +38,9 @@ void setup() {
 }
 
 void loop() {
-
+	//ZONE.allOn(); 
+	//ZONE.allOff();
+	//ZONE.ledBlink(3000);
+	//ZONE.test();
 	ZONE.execute();
 }

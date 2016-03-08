@@ -18,12 +18,18 @@ Zone::Zone(String name, int data, int latch, int clock, int moisture, int photo,
 	m_valve(SOLENOID_ID, valveOn), 
 	m_periPump(PERI_PUMP_ID, periPumpOn), 
 	m_moistureSensor(MOISTURE_SENSOR_ID, pollOn, moisture), 
+	m_photoresistor(PHOTORESISTOR_ID, pollOn, photo),
+	m_tempSensor(TEMP_SENSOR_ID, pollOn, temp),
 	m_mixer(MIXER_ID, mixerOn),
 	m_waterPump(PUMP_ID, pumpOn),
 	m_phUp(PHUP_ID, phUpOn),
-	m_phDown(PHDOWN_ID, phDownOn)
+	m_phDown(PHDOWN_ID, phDownOn),
+	m_fan(FAN_ID, pollOff + pollOn)
 {
 	m_moisutreAve = 1000;
+	m_photoAve = 1000;
+	m_tempAve = 1000;
+
 	m_watering = false;
 	m_pauseWatering = 0;
 
@@ -55,7 +61,9 @@ void Zone::execute()
 	// Lifecycle
 	monitor(now);
 	illuminate(now); 
-	irrigate(now);
+
+	// Handle
+	handleComponents(now);
 
 	// Display
 	mapRegister();
@@ -76,91 +84,67 @@ void Zone::mapRegister()
 	m_bitmask[PUMP_PWR] = m_waterPump.getState();
 	m_bitmask[PHUP_PWR] = m_phUp.getState();
 	m_bitmask[PHDOWN_PWR] = m_phDown.getState();
+	m_bitmask[FAN_PWR] = m_fan.getState();
 
+}
+
+void Zone::handleComponents(unsigned long now)
+{
+	m_waterPump.handle(now);
+	m_periPump.handle(now);
+	m_mixer.handle(now);
+	m_phDown.handle(now);
+	m_phUp.handle(now);
+	m_mixer.handle(now);
+	m_valve.handle(now);
+	m_moistureSensor.handle(now);
+	m_photoresistor.handle(now);
+	m_tempSensor.handle(now);
+	m_light.handle(now);
 }
 
 void Zone::irrigate(unsigned long now)
 {
+	//if (!m_watering) {  // uncomment this line when testing
+	if (!isIrrigating() && m_moisutreAve < 350) {         // comment this line when testing
 
-	// If there is too much moisture in the soil, then there
-	// is no need to water.  However, we should start watering
-	// if there is not enough moisture in the soil and we should
-	// stop watering if all of our components have finished their 
-	// actions
-	if (m_pauseWatering < now)
-	{
-		//if (!m_watering) {  // uncomment this line when testing
-		if (!m_watering && m_moisutreAve < 450) {         // comment this line when testing
+		// Notify serial that irrigation is starting
+		Serial.print(IRRIGATE_ID);
+		Serial.print(":");
+		Serial.println(1);
 
-			// Notify serial that irrigation is starting
-			Serial.print(IRRIGATE_ID);
-			Serial.print(":");
-			Serial.println(1);
+		// Open the valve and turn on the pump in order to get water from
+		// the resovior to the preperation container
+		m_waterPump.schedule(0, now);
 
-			// Open the valve and turn on the pump in order to get water from
-			// the resovior to the preperation container
-			m_waterPump.schedule(0, now);
+		// Turn the peri pump on to feed the plants
+		m_periPump.schedule(m_waterPump.getScheduledOff() - now, now);
 
-			// Turn the peri pump on to feed the plants
-			m_periPump.schedule(m_waterPump.getScheduledOff() - now, now);
+		// Turn on the mixers to mix nutrients
+		m_mixer.schedule(m_periPump.getScheduledOff() - now, now);
 
-			// Turn on the mixers to mix nutrients
-			m_mixer.schedule(m_periPump.getScheduledOff() - now, now);
+		// Adjust the ph
 
-			// Adjust the ph
+		// Below is where the logic for choosing if the ph needs to go up or down. This
+		// is set to be "random" when testing
 
-			// Below is where the logic for choosing if the ph needs to go up or down. This
-			// is set to be "random" when testing
+		unsigned long phDelay = 0;
+		m_phUp.schedule(m_mixer.getScheduledOff() - now, now);
+		m_phDown.schedule(m_mixer.getScheduledOff() - now, now);
+		phDelay = m_phUp.getScheduledOff();
 
-			unsigned long phDelay = 0;
-			if (now % 2 == 0)
-			{
-				m_phUp.schedule(m_mixer.getScheduledOff() - now, now);
-				phDelay = m_phUp.getScheduledOff();
-			}
-			else
-			{
-				m_phDown.schedule(m_mixer.getScheduledOff() - now, now);
-				phDelay = m_phDown.getScheduledOff();
-			}
+		// TODO: Schedule mixer. Will require having a queue of schedules. 
 
-			// TODO: Schedule mixer. Will require having a queue of schedules. 
+		// Open the valve to water the plants
+		m_valve.schedule(phDelay - now, now);
 
-			// Open the valve to water the plants
-			m_valve.schedule(phDelay - now, now);
-
-			m_watering = true;
-		}
-
-		// maybe find a better way to do this
-		else if (m_watering && m_periPump.getState() == 0 && m_valve.getState() == 0 && m_mixer.getState() == 0
-			&& m_waterPump.getState() == 0 && m_phDown.getState() == 0 && m_phUp.getState() == 0)
-		{
-			// Becacuse sensors have an off period there is a lag between readings.  If
-			// a watering happens then the moisture level of the soil will not update
-			// until the sensors poll again. Because the irrigation service is triggered
-			// based on the value off the average moisture of the most recent sensor poll, it will 
-			// continue to trigger until the sensors polls again.  Therefore, after a watering, 
-			// the irrigate service must wait until it knows the sensors have polled again
-
-			m_pauseWatering = now + m_pollOff + m_pollOn + 1000; // 1000 for error margin
-			m_watering = false;
-
-			// Notify serial irrigation is stopping
-			Serial.print(IRRIGATE_ID);
-			Serial.print(":");
-			Serial.println(0);
-		}
-
-
-		m_waterPump.handle(now);
-		m_periPump.handle(now);
-		m_mixer.handle(now);
-		m_phDown.handle(now);
-		m_phUp.handle(now);
-		m_mixer.handle(now);
-		m_valve.handle(now);
+		m_watering = true;
 	}
+}
+
+bool Zone::isIrrigating() 
+{
+	return m_waterPump.getState() || m_periPump.getState() || m_mixer.getState() || m_phDown.getState() || m_phUp.getState() || m_valve.getState();
 }
 
 void Zone::monitor(unsigned long now)
@@ -169,36 +153,44 @@ void Zone::monitor(unsigned long now)
 	if (!m_polling && m_nextPoll < now) {
 
 		// Nofiy serial that poll is turning on
-		Serial.print(POLL_ID);
-		Serial.print(":");
-		Serial.println(1);
+		notifySerial(POLL_ID, 1);
 
+		// Clear all average and set a schedule
 		m_moistureSensor.clearAverage();
+		m_photoresistor.clearAverage();
+		m_tempSensor.clearAverage();
+
 		m_moistureSensor.schedule(0, now);
+		m_photoresistor.schedule(0, now);
+		m_tempSensor.schedule(0, now);
+
 		m_polling = true;
 	}
 
-	else if (m_polling && m_moistureSensor.getState() == 0)
+	else if (m_polling && m_moistureSensor.getState() == 0 && m_photoresistor.getState() == 0 && m_tempSensor.getState() == 0)
 	{
 		// Nofiy serial that poll is turning off
-		Serial.print(POLL_ID);
-		Serial.print(":");
-		Serial.println(0);
+		notifySerial(POLL_ID, 0);
 
 		m_moisutreAve = m_moistureSensor.getAverage();
+		m_photoAve = m_photoresistor.getAverage();
+		m_tempAve = m_tempSensor.getAverage();
 
-		// Nofiy serial of the moisture reading
-
-		Serial.print(MOISTURE_SENSOR_ID);
-		Serial.print(":");
-		Serial.println(m_moisutreAve);
+		// Nofiy serial of the sensor readings
+		notifySerial(m_moistureSensor.getId(), m_moisutreAve);
+		notifySerial(m_photoresistor.getId(), m_photoAve);
+		notifySerial(m_tempSensor.getId(), m_tempAve);
 
 		displayMoistureLEDs(m_moisutreAve);
+		displayTempLEDs(m_tempAve);
+
 		m_nextPoll = now + m_pollOff;
 		m_polling = false;
-	}
 
-	m_moistureSensor.handle(now);
+		// Notify data driven function that new data is available
+		irrigate(now);
+		controlTemp(now);
+	}
 }
 
 void Zone::illuminate(unsigned long now)
@@ -225,8 +217,20 @@ void Zone::illuminate(unsigned long now)
 		m_nextDay = now + m_lightOff;
 		m_isDay = false;
 	}
+}
 
-	m_light.handle(now);
+void Zone::controlTemp(unsigned long now)
+{
+	if (m_fan.getState() == 0 && m_tempAve > 159) 
+	{
+		m_fan.setState(1);
+		notifySerial(FAN_ID, 1);
+	}
+	else if(m_tempAve <= 159)
+	{
+		m_fan.setState(0);
+		notifySerial(FAN_ID, 0);
+	}
 }
 
 void Zone::displayMoistureLEDs(int level)
@@ -241,4 +245,18 @@ void Zone::displayMoistureLEDs(int level)
 	m_bitmask[MOISTURE_LED_GOOD] = (300 <= level && level < 400);
 	m_bitmask[MOISTURE_LED_HMED] = (400 <= level && level < 500);
 	m_bitmask[MOISTURE_LED_HIGH] = (500 <= level);
+}
+
+void Zone::displayTempLEDs(int level)
+{
+
+	// 0 is the minimum reading and 550 is the maximum reading. 
+	// Dry watering should start when moisture level is 300. These
+	// are all arbitrary at the moment.
+
+	m_bitmask[TEMP_LED_LOW] = (0 <= level && level < 50);
+	m_bitmask[TEMP_LED_LMED] = (50 <= level && level < 100);
+	m_bitmask[TEMP_LED_GOOD] = (100 <= level && level < 159);
+	m_bitmask[TEMP_LED_HMED] = (159 <= level && level < 265);
+	m_bitmask[TEMP_LED_HIGH] = (265 <= level);
 }

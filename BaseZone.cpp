@@ -29,6 +29,12 @@ BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, in
 	pinMode(humidity, INPUT);
 }
 
+void BaseZone::notifySerial(int component_id, int output) {
+	Serial.print(component_id);
+	Serial.print(":");
+	Serial.println(output);
+}
+
 void BaseZone::test()
 {
 	ledOneByOne(250);
@@ -51,7 +57,21 @@ void BaseZone::ledOneByOne(int wait) {
 	putToRegister();
 }
 
+void BaseZone::allOn() {
+	int numBits = NUM_REGISTERS * 8;
+	for (int bit = 0; bit < numBits; bit++) {
+		m_bitmask[bit] = 1;
+	}
+	putToRegister();
+}
 
+void BaseZone::allOff() {
+	int numBits = NUM_REGISTERS * 8;
+	for (int bit = 0; bit < numBits; bit++) {
+		m_bitmask[bit] = 0;
+	}
+	putToRegister();
+}
 
 void BaseZone::ledBlink(int wait) {
 	int numBits = NUM_REGISTERS * 8;
