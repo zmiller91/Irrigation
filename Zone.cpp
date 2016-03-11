@@ -1,7 +1,8 @@
 // 
 // 
 // 
-
+#include "Root.h"
+#include "BaseZone.h"
 #include "Zone.h"
 
 Zone::Zone(){};
@@ -109,9 +110,7 @@ void Zone::irrigate(unsigned long now)
 	if (!isIrrigating() && m_moisutreAve < 350) {         // comment this line when testing
 
 		// Notify serial that irrigation is starting
-		Serial.print(IRRIGATE_ID);
-		Serial.print(":");
-		Serial.println(1);
+		Root::notifySerial(IRRIGATE_ID, ON_OFF, 1);
 
 		// Open the valve and turn on the pump in order to get water from
 		// the resovior to the preperation container
@@ -153,7 +152,7 @@ void Zone::monitor(unsigned long now)
 	if (!m_polling && m_nextPoll < now) {
 
 		// Nofiy serial that poll is turning on
-		notifySerial(POLL_ID, 1);
+		Root::notifySerial(POLL_ID, ON_OFF, 1);
 
 		// Clear all average and set a schedule
 		m_moistureSensor.clearAverage();
@@ -170,16 +169,16 @@ void Zone::monitor(unsigned long now)
 	else if (m_polling && m_moistureSensor.getState() == 0 && m_photoresistor.getState() == 0 && m_tempSensor.getState() == 0)
 	{
 		// Nofiy serial that poll is turning off
-		notifySerial(POLL_ID, 0);
+		Root::notifySerial(POLL_ID, ON_OFF, 0);
 
 		m_moisutreAve = m_moistureSensor.getAverage();
 		m_photoAve = m_photoresistor.getAverage();
 		m_tempAve = m_tempSensor.getAverage();
 
 		// Nofiy serial of the sensor readings
-		notifySerial(m_moistureSensor.getId(), m_moisutreAve);
-		notifySerial(m_photoresistor.getId(), m_photoAve);
-		notifySerial(m_tempSensor.getId(), m_tempAve);
+		Root::notifySerial(m_moistureSensor.getId(), POLL_RESULTS, m_moisutreAve);
+		Root::notifySerial(m_photoresistor.getId(), POLL_RESULTS, m_photoAve);
+		Root::notifySerial(m_tempSensor.getId(), POLL_RESULTS, m_tempAve);
 
 		displayMoistureLEDs(m_moisutreAve);
 		displayTempLEDs(m_tempAve);
@@ -199,9 +198,7 @@ void Zone::illuminate(unsigned long now)
 	if (!m_isDay && m_nextDay < now) 
 	{	
 		// Notify serial that light is turning on
-		Serial.print(ILLUMINATE_ID);
-		Serial.print(":");
-		Serial.println(1);
+		Root::notifySerial(ILLUMINATE_ID, ON_OFF, 1);
 
 		m_light.schedule(0, now);
 		m_isDay = true;
@@ -210,9 +207,7 @@ void Zone::illuminate(unsigned long now)
 	else if (m_isDay && m_light.getState() == 0)
 	{
 		// Nofiy serial light is turning off
-		Serial.print(ILLUMINATE_ID);
-		Serial.print(":");
-		Serial.println(0);
+		Root::notifySerial(ILLUMINATE_ID, ON_OFF, 0);
 
 		m_nextDay = now + m_lightOff;
 		m_isDay = false;
@@ -224,12 +219,12 @@ void Zone::controlTemp(unsigned long now)
 	if (m_fan.getState() == 0 && m_tempAve > 159) 
 	{
 		m_fan.setState(1);
-		notifySerial(FAN_ID, 1);
+		Root::notifySerial(FAN_ID, ON_OFF, 1);
 	}
 	else if(m_tempAve <= 159)
 	{
 		m_fan.setState(0);
-		notifySerial(FAN_ID, 0);
+		Root::notifySerial(FAN_ID, ON_OFF, 0);
 	}
 }
 

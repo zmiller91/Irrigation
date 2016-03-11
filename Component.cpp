@@ -1,9 +1,9 @@
 // 
 // 
 // 
-
 #include "Component.h"
 #include "MemoryFree.h"
+#include "Root.h"
 
 Component::Component() {
 	m_scheduledOn = 100;
@@ -11,8 +11,8 @@ Component::Component() {
 };
 Component::Component(int id, unsigned long timeOn)
 {
-	Serial.begin(9600);
-	Serial.println(freeMemory());
+	//int fm = freeMemory();
+	//Root::notifySerial(1, 1, 1);
 
 	m_id = id;
 	m_timeOn = timeOn;
@@ -71,9 +71,7 @@ void Component::handle(unsigned long now)
 		// of a state change
 		if (getState() == 0)
 		{
-			Serial.print(m_id);
-			Serial.print(":");
-			Serial.println(1);
+			Root::notifySerial(m_id, ON_OFF, 1);
 		}
 
 		setState(1);
@@ -81,10 +79,7 @@ void Component::handle(unsigned long now)
 
 	else if (getState() == 1)
 	{
-		Serial.print(m_id);
-		Serial.print(":");
-		Serial.println(0);
-
+		Root::notifySerial(m_id, ON_OFF, 0);
 		setState(0);
 	}
 }

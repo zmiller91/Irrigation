@@ -9,8 +9,6 @@
 	#include "WProgram.h"
 #endif
 
-#include "Component.h"
-
 class Sensor: public Component
 {
  protected:

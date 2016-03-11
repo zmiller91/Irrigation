@@ -9,8 +9,6 @@
 	#include "WProgram.h"
 #endif
 
-#include "CustomSerial.h"
-
 class BaseZone
 {
 protected:
@@ -107,28 +105,11 @@ protected:
 	* are the maps for common actions and components.
 	*/
 
-	// Component IDs. All component IDs start with 1000
-	int PUMP_ID = 1000;
-	int PERI_PUMP_ID = 1001;
-	int MIXER_ID = 1002;
-	int PHDOWN_ID = 1003;
-	int PHUP_ID = 1004;
-	int SOLENOID_ID = 1005;
-	int LIGHT_ID = 1006;
-	int FAN_ID = 1007;
+	// TODO: We should rethink this conf. It probably needs to go in a super
+	// duper base class that everything inherits.  That way we aren't
+	// duplicating work in Component.cpp
 
-	// Action IDs. All action IDs start with 2000
-	int POLL_ID = 2000;
-	int IRRIGATE_ID = 2001;
-	int ILLUMINATE_ID = 2002;
 
-	// Sensor IDs. All sensor IDs start with 3000
-	int MOISTURE_SENSOR_ID = 3000;
-	int PHOTORESISTOR_ID = 3001;
-	int TEMP_SENSOR_ID = 3002;
-
-	// Admin/Debug/Other IDs.  All these IDs start with 4000
-	int MEM_USAGE_ID = 4000;
 
 public:
 	BaseZone();
@@ -137,7 +118,6 @@ public:
 	void allOn();
 	void allOff();
 	void ledBlink(int);
-	void notifySerial(int, int);
 };
 
 #endif

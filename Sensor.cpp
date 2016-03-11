@@ -2,7 +2,9 @@
 // 
 // 
 
+#include "Component.h"
 #include "Sensor.h"
+#include "Root.h"
 
 Sensor::Sensor() {};
 Sensor::Sensor(int id, unsigned long scheduledOn, int analogPin):
@@ -46,9 +48,7 @@ void Sensor::handle(unsigned long now)
 
 		if (getState() == 0)
 		{
-			Serial.print(m_id);
-			Serial.print(":");
-			Serial.println(1);
+			Root::notifySerial(m_id, ON_OFF, 1);
 		}
 
 		setState(1);
@@ -57,10 +57,7 @@ void Sensor::handle(unsigned long now)
 
 	else if (getState() == 1)
 	{
-		Serial.print(m_id);
-		Serial.print(":");
-		Serial.println(0);
-
+		Root::notifySerial(m_id, ON_OFF, 0);
 		setState(0);
 	}
 }

@@ -1,9 +1,9 @@
 
-// Analog In
 #include "MemoryFree.h"
+#include "Root.h"
+#include "Component.h"
 #include "Sensor.h"
 #include "BaseZone.h"
-#include "Component.h"
 #include "Zone.h"
 
 unsigned long AI_00 = 0;
@@ -33,6 +33,7 @@ Zone ZONE("Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03,
 	2750, 1000,  0, 0, 0, 0); /* Valve on, Peri on, Mixer on, Pump on, phUp on, phDown on */
 
 void setup() {
+
 	Serial.begin(9600);
 	//ZONE.test();
 }

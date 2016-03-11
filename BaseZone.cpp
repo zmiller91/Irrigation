@@ -1,7 +1,6 @@
 // 
 // 
 // 
-
 #include "BaseZone.h"
 
 BaseZone::BaseZone(){}
@@ -27,12 +26,6 @@ BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, in
 	pinMode(photo, INPUT);
 	pinMode(temp, INPUT);
 	pinMode(humidity, INPUT);
-}
-
-void BaseZone::notifySerial(int component_id, int output) {
-	Serial.print(component_id);
-	Serial.print(":");
-	Serial.println(output);
 }
 
 void BaseZone::test()
