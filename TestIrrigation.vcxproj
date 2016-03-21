@@ -122,8 +122,8 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="H.h" />
     <ClInclude Include="MemoryFree.h" />
+    <ClInclude Include="Root.h" />
     <ClInclude Include="Sensor.h" />
-    <ClInclude Include="CustomSerial.h" />
     <ClInclude Include="Zone.h" />
     <ClInclude Include="__vm\.TestIrrigation.vsarduino.h" />
   </ItemGroup>
@@ -132,8 +132,8 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="H.cpp" />
     <ClCompile Include="MemoryFree.cpp" />
+    <ClCompile Include="Root.cpp" />
     <ClCompile Include="Sensor.cpp" />
-    <ClCompile Include="CustomSerial.cpp" />
     <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

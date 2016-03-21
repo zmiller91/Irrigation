@@ -39,7 +39,7 @@
     <ClInclude Include="MemoryFree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomSerial.h">
+    <ClInclude Include="Root.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,7 +62,7 @@
     <ClCompile Include="MemoryFree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CustomSerial.cpp">
+    <ClCompile Include="Root.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

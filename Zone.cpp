@@ -78,7 +78,7 @@ void Zone::execute()
 void Zone::mapRegister()
 {
 	m_bitmask[LIGHT_PWR] = m_light.getState();
-	m_bitmask[MOISTURE_SENSOR] = m_moistureSensor.getState();
+	m_bitmask[MOISTURE_SENSOR] = m_moistureSensor.getState(); //TODO: This is wrong
 	m_bitmask[SOLENOID_PWR] = m_valve.getState();
 	m_bitmask[PERI_PUMP] = m_periPump.getState();
 	m_bitmask[MIXER_PWR] = m_mixer.getState();
@@ -159,9 +159,12 @@ void Zone::monitor(unsigned long now)
 		m_photoresistor.clearAverage();
 		m_tempSensor.clearAverage();
 
+		// Sensors can influence eachother, so poll
+		// sequentially,  not simultaneously
+
 		m_moistureSensor.schedule(0, now);
-		m_photoresistor.schedule(0, now);
-		m_tempSensor.schedule(0, now);
+		m_photoresistor.schedule(m_moistureSensor.getScheduledOff() - now, now);
+		m_tempSensor.schedule(m_photoresistor.getScheduledOff() - now, now);
 
 		m_polling = true;
 	}
@@ -223,8 +226,11 @@ void Zone::controlTemp(unsigned long now)
 	}
 	else if(m_tempAve <= 159)
 	{
+		if (m_fan.getState() == 1)
+		{
+			Root::notifySerial(FAN_ID, ON_OFF, 0);
+		}
 		m_fan.setState(0);
-		Root::notifySerial(FAN_ID, ON_OFF, 0);
 	}
 }
 
@@ -251,7 +257,7 @@ void Zone::displayTempLEDs(int level)
 
 	m_bitmask[TEMP_LED_LOW] = (0 <= level && level < 50);
 	m_bitmask[TEMP_LED_LMED] = (50 <= level && level < 100);
-	m_bitmask[TEMP_LED_GOOD] = (100 <= level && level < 159);
-	m_bitmask[TEMP_LED_HMED] = (159 <= level && level < 265);
+	m_bitmask[TEMP_LED_GOOD] = (100 <= level && level < 160);
+	m_bitmask[TEMP_LED_HMED] = (160 <= level && level < 265);
 	m_bitmask[TEMP_LED_HIGH] = (265 <= level);
 }
