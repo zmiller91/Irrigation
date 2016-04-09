@@ -18,14 +18,18 @@ Sensor::Sensor(int id, unsigned long scheduledOn, int analogPin):
 	m_polling = false;
 }
 
-int Sensor::poll(bool skip)
+int Sensor::poll()
 {
+
+	// http://forum.arduino.cc/index.php?topic=256921.0
+	// The arduino uses a multiplexer for its inputs which means
+	// sensors can influence the next sensors readings if the electrical
+	// impedence is great enough. Therefore, read it twice, ignoring the first
+
+	analogRead(m_analogPin);
 	int read = analogRead(m_analogPin);
-	if (!skip)
-	{
-		m_sumPolls += read;
-		m_numPolls += 1;
-	}
+	m_sumPolls += read;
+	m_numPolls += 1;
 	return read;
 }
 
@@ -48,19 +52,18 @@ void Sensor::handle(unsigned long now)
 {
 	if (getScheduledOn() <= now && now < getScheduledOff())
 	{
-		// http://forum.arduino.cc/index.php?topic=256921.0
-		// The arduino uses a multiplexer for its inputs which means
-		// sensors can influence the next sensors readings if the electrical
-		// impedence is great enough. Therefore, ignore the first poll
 
 		if (getState() == 0)
 		{
 			Root::notifySerial(m_id, ON_OFF, 1);
-			poll(true);
 		}
 		else 
 		{
-			poll(false);
+			// http://forum.arduino.cc/index.php?topic=256921.0
+			// The arduino uses a multiplexer for its inputs which means
+			// sensors can influence the next sensors readings if the electrical
+			// impedence is great enough. Therefore, ignore
+			poll();
 		}
 
 		setState(1);

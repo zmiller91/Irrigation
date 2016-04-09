@@ -78,7 +78,7 @@ void Zone::execute()
 void Zone::mapRegister()
 {
 	m_bitmask[LIGHT_PWR] = m_light.getState();
-	m_bitmask[MOISTURE_SENSOR] = m_moistureSensor.getState(); //TODO: This is wrong
+	m_bitmask[MOISTURE_SENSOR] = m_moistureSensor.getState();
 	m_bitmask[SOLENOID_PWR] = m_valve.getState();
 	m_bitmask[PERI_PUMP] = m_periPump.getState();
 	m_bitmask[MIXER_PWR] = m_mixer.getState();
@@ -159,12 +159,9 @@ void Zone::monitor(unsigned long now)
 		m_photoresistor.clearAverage();
 		m_tempSensor.clearAverage();
 
-		// Sensors can influence eachother, so poll
-		// sequentially,  not simultaneously
-
 		m_moistureSensor.schedule(0, now);
-		m_photoresistor.schedule(m_moistureSensor.getScheduledOff() - now, now);
-		m_tempSensor.schedule(m_photoresistor.getScheduledOff() - now, now);
+		m_photoresistor.schedule(0, now);
+		m_tempSensor.schedule(0, now);
 
 		m_polling = true;
 	}
@@ -219,12 +216,16 @@ void Zone::illuminate(unsigned long now)
 
 void Zone::controlTemp(unsigned long now)
 {
-	if (m_fan.getState() == 0 && m_tempAve > 159) 
+	int maxTemp = 148;
+	int minTemp = 143;
+	int curTemp = m_tempSensor.poll();
+
+	if (m_fan.getState() == 0 && (m_tempAve > maxTemp || curTemp > maxTemp)) 
 	{
 		m_fan.setState(1);
 		Root::notifySerial(FAN_ID, ON_OFF, 1);
 	}
-	else if(m_tempAve <= 159)
+	else if(m_tempAve <= minTemp || curTemp <= minTemp)
 	{
 		if (m_fan.getState() == 1)
 		{
