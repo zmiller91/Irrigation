@@ -2,7 +2,9 @@
 // 
 // 
 
+#include "Component.h"
 #include "Sensor.h"
+#include "Root.h"
 
 Sensor::Sensor() {};
 Sensor::Sensor(int id, unsigned long scheduledOn, int analogPin):
@@ -18,6 +20,13 @@ Sensor::Sensor(int id, unsigned long scheduledOn, int analogPin):
 
 int Sensor::poll()
 {
+
+	// http://forum.arduino.cc/index.php?topic=256921.0
+	// The arduino uses a multiplexer for its inputs which means
+	// sensors can influence the next sensors readings if the electrical
+	// impedence is great enough. Therefore, read it twice, ignoring the first
+
+	analogRead(m_analogPin);
 	int read = analogRead(m_analogPin);
 	m_sumPolls += read;
 	m_numPolls += 1;
@@ -46,21 +55,23 @@ void Sensor::handle(unsigned long now)
 
 		if (getState() == 0)
 		{
-			Serial.print(m_id);
-			Serial.print(":");
-			Serial.println(1);
+			Root::notifySerial(m_id, ON_OFF, 1);
+		}
+		else 
+		{
+			// http://forum.arduino.cc/index.php?topic=256921.0
+			// The arduino uses a multiplexer for its inputs which means
+			// sensors can influence the next sensors readings if the electrical
+			// impedence is great enough. Therefore, ignore
+			poll();
 		}
 
 		setState(1);
-		poll();
 	}
 
 	else if (getState() == 1)
 	{
-		Serial.print(m_id);
-		Serial.print(":");
-		Serial.println(0);
-
+		Root::notifySerial(m_id, ON_OFF, 0);
 		setState(0);
 	}
 }
