@@ -6,42 +6,33 @@
 #include "Zone.h"
 
 Zone::Zone(){};
-Zone::Zone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity, 
-	unsigned long lightOn, unsigned long lightOff,
-	unsigned long pollOn, unsigned long pollOff,
-	unsigned long valveOn, unsigned long periPumpOn,
-	unsigned long mixerOn, unsigned long pumpOn,
-	unsigned long phUpOn, unsigned long phDownOn) :
+Zone::Zone(Conf* conf, String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity) :
 
 	// Construct member objects
 	BaseZone(name, data, latch, clock, moisture, photo, temp, humidity),
-	m_light(LIGHT_ID, lightOn), 
-	m_valve(SOLENOID_ID, valveOn), 
-	m_periPump(PERI_PUMP_ID, periPumpOn), 
-	m_moistureSensor(MOISTURE_SENSOR_ID, pollOn, moisture), 
-	m_photoresistor(PHOTORESISTOR_ID, pollOn, photo),
-	m_tempSensor(TEMP_SENSOR_ID, pollOn, temp),
-	m_mixer(MIXER_ID, mixerOn),
-	m_waterPump(PUMP_ID, pumpOn),
-	m_phUp(PHUP_ID, phUpOn),
-	m_phDown(PHDOWN_ID, phDownOn),
-	m_fan(FAN_ID, pollOff + pollOn)
+	m_light(Conf::LIGHT_ID), 
+	m_valve(Conf::SOLENOID_ID),
+	m_periPump(Conf::PERI_PUMP_ID),
+	m_moistureSensor(Conf::MOISTURE_SENSOR_ID, moisture),
+	m_photoresistor(Conf::PHOTORESISTOR_ID, photo),
+	m_tempSensor(Conf::TEMP_SENSOR_ID, temp),
+	m_mixer(Conf::MIXER_ID),
+	m_waterPump(Conf::PUMP_ID),
+	m_phUp(Conf::PHUP_ID),
+	m_phDown(Conf::PHDOWN_ID),
+	m_fan(Conf::FAN_ID)
 {
+	m_conf = conf;
+
 	m_moisutreAve = 1000;
 	m_photoAve = 1000;
 	m_tempAve = 1000;
 
-	m_watering = false;
-	m_pauseWatering = 0;
-
 	m_polling = false;
-	m_pollOn = pollOn;
-	m_pollOff = pollOff;
-	m_nextPoll = millis();
+	m_nextPoll = 0;
 
 	m_isDay = false;
-	m_lightOff = lightOff;
-	m_nextDay = millis();
+	m_nextDay = 0;
 }
 
 void Zone::clearRegister()
@@ -107,37 +98,35 @@ void Zone::handleComponents(unsigned long now)
 void Zone::irrigate(unsigned long now)
 {
 	//if (!m_watering) {  // uncomment this line when testing
-	if (!isIrrigating() && m_moisutreAve < 350) {         // comment this line when testing
+	if (!isIrrigating() && m_moisutreAve < m_conf->getMinWater()) {         // comment this line when testing
 
 		// Notify serial that irrigation is starting
-		Root::notifySerial(IRRIGATE_ID, ON_OFF, 1);
+		Root::notifySerial(Conf::IRRIGATE_ID, Conf::ON_OFF, 1);
 
 		// Open the valve and turn on the pump in order to get water from
 		// the resovior to the preperation container
-		m_waterPump.schedule(0, now);
+		m_waterPump.schedule(0, m_conf->getWaterPumpOn(),now);
 
 		// Turn the peri pump on to feed the plants
-		m_periPump.schedule(m_waterPump.getScheduledOff() - now, now);
+		m_periPump.schedule(m_waterPump.getScheduledOff() - now, m_conf->getPeriPumpOn(), now);
 
 		// Turn on the mixers to mix nutrients
-		m_mixer.schedule(m_periPump.getScheduledOff() - now, now);
+		m_mixer.schedule(m_periPump.getScheduledOff() - now, m_conf->getMixerOn(), now);
 
 		// Adjust the ph
 
 		// Below is where the logic for choosing if the ph needs to go up or down. This
 		// is set to be "random" when testing
 
-		unsigned long phDelay = 0;
-		m_phUp.schedule(m_mixer.getScheduledOff() - now, now);
-		m_phDown.schedule(m_mixer.getScheduledOff() - now, now);
-		phDelay = m_phUp.getScheduledOff();
+//		unsigned long phDelay = 0;
+//		m_phUp.schedule(m_mixer.getScheduledOff() - now, now);
+//		m_phDown.schedule(m_mixer.getScheduledOff() - now, now);
+//		phDelay = m_phUp.getScheduledOff();
 
 		// TODO: Schedule mixer. Will require having a queue of schedules. 
 
 		// Open the valve to water the plants
-		m_valve.schedule(phDelay - now, now);
-
-		m_watering = true;
+		m_valve.schedule(m_mixer.getScheduledOff() - now, m_conf->getValveOpen(), now);
 	}
 }
 
@@ -148,20 +137,18 @@ bool Zone::isIrrigating()
 
 void Zone::monitor(unsigned long now)
 {
-
 	if (!m_polling && m_nextPoll < now) {
 
 		// Nofiy serial that poll is turning on
-		Root::notifySerial(POLL_ID, ON_OFF, 1);
-
+		Root::notifySerial(Conf::POLL_ID, Conf::ON_OFF, 1);
 		// Clear all average and set a schedule
 		m_moistureSensor.clearAverage();
 		m_photoresistor.clearAverage();
 		m_tempSensor.clearAverage();
 
-		m_moistureSensor.schedule(0, now);
-		m_photoresistor.schedule(0, now);
-		m_tempSensor.schedule(0, now);
+		m_moistureSensor.schedule(0, m_conf->getPollOn(), now);
+		m_photoresistor.schedule(0, m_conf->getPollOn(), now);
+		m_tempSensor.schedule(0, m_conf->getPollOn(), now);
 
 		m_polling = true;
 	}
@@ -169,21 +156,21 @@ void Zone::monitor(unsigned long now)
 	else if (m_polling && m_moistureSensor.getState() == 0 && m_photoresistor.getState() == 0 && m_tempSensor.getState() == 0)
 	{
 		// Nofiy serial that poll is turning off
-		Root::notifySerial(POLL_ID, ON_OFF, 0);
+		Root::notifySerial(Conf::POLL_ID, Conf::ON_OFF, 0);
 
 		m_moisutreAve = m_moistureSensor.getAverage();
 		m_photoAve = m_photoresistor.getAverage();
 		m_tempAve = m_tempSensor.getAverage();
 
 		// Nofiy serial of the sensor readings
-		Root::notifySerial(m_moistureSensor.getId(), POLL_RESULTS, m_moisutreAve);
-		Root::notifySerial(m_photoresistor.getId(), POLL_RESULTS, m_photoAve);
-		Root::notifySerial(m_tempSensor.getId(), POLL_RESULTS, m_tempAve);
+		Root::notifySerial(m_moistureSensor.getId(), Conf::POLL_RESULTS, m_moisutreAve);
+		Root::notifySerial(m_photoresistor.getId(), Conf::POLL_RESULTS, m_photoAve);
+		Root::notifySerial(m_tempSensor.getId(), Conf::POLL_RESULTS, m_tempAve);
 
 		displayMoistureLEDs(m_moisutreAve);
 		displayTempLEDs(m_tempAve);
 
-		m_nextPoll = now + m_pollOff;
+		m_nextPoll = now + m_conf->getPollOff();
 		m_polling = false;
 
 		// Notify data driven function that new data is available
@@ -194,42 +181,41 @@ void Zone::monitor(unsigned long now)
 
 void Zone::illuminate(unsigned long now)
 {
-
+	//Serial.println("Illuminating");
 	if (!m_isDay && m_nextDay < now) 
-	{	
+	{
 		// Notify serial that light is turning on
-		Root::notifySerial(ILLUMINATE_ID, ON_OFF, 1);
-
-		m_light.schedule(0, now);
+		Root::notifySerial(Conf::ILLUMINATE_ID, ON_OFF, 1);
+		m_light.schedule(0, m_conf->getLightOn(), now);
 		m_isDay = true;
 	}
 
 	else if (m_isDay && m_light.getState() == 0)
 	{
 		// Nofiy serial light is turning off
-		Root::notifySerial(ILLUMINATE_ID, ON_OFF, 0);
-
-		m_nextDay = now + m_lightOff;
+		Root::notifySerial(Conf::ILLUMINATE_ID, ON_OFF, 0);
+		m_nextDay = now + m_conf->getLightOff();
 		m_isDay = false;
 	}
+	//Serial.println("Done illuminating");
 }
 
 void Zone::controlTemp(unsigned long now)
 {
-	int maxTemp = 148;
-	int minTemp = 143;
+	int maxTemp = m_conf->getMaxTemp();
+	int minTemp = m_conf->getMinTemp();
 	int curTemp = m_tempSensor.poll();
 
 	if (m_fan.getState() == 0 && (m_tempAve > maxTemp || curTemp > maxTemp)) 
 	{
 		m_fan.setState(1);
-		Root::notifySerial(FAN_ID, ON_OFF, 1);
+		Root::notifySerial(Conf::FAN_ID, Conf::ON_OFF, 1);
 	}
 	else if(m_tempAve <= minTemp || curTemp <= minTemp)
 	{
 		if (m_fan.getState() == 1)
 		{
-			Root::notifySerial(FAN_ID, ON_OFF, 0);
+			Root::notifySerial(Conf::FAN_ID, Conf::ON_OFF, 0);
 		}
 		m_fan.setState(0);
 	}

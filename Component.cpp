@@ -4,28 +4,28 @@
 #include "Component.h"
 #include "MemoryFree.h"
 #include "Root.h"
+#include "Conf.h"
 
 Component::Component() {
 	m_scheduledOn = 100;
 	m_scheduledOff = 10000;
 };
-Component::Component(int id, unsigned long timeOn)
+Component::Component(int id)
 {
 	//int fm = freeMemory();
 	//Root::notifySerial(1, 1, 1);
 
 	m_id = id;
-	m_timeOn = timeOn;
 	m_scheduledOn = 0;
 	m_scheduledOff = 0;
 	m_state = 0;
 	m_lastUpdate = 0;
 }
 
-void Component::schedule(unsigned long delay, unsigned long now)
+void Component::schedule(unsigned long delay, unsigned long timeOn, unsigned long now)
 {
 	m_scheduledOn = (now + delay);
-	m_scheduledOff = (m_scheduledOn + m_timeOn);
+	m_scheduledOff = (m_scheduledOn + timeOn);
 	m_lastUpdate = millis();
 }
 
@@ -71,7 +71,7 @@ void Component::handle(unsigned long now)
 		// of a state change
 		if (getState() == 0)
 		{
-			Root::notifySerial(m_id, ON_OFF, 1);
+			Root::notifySerial(m_id, Conf::ON_OFF, 1);
 		}
 
 		setState(1);
@@ -79,7 +79,7 @@ void Component::handle(unsigned long now)
 
 	else if (getState() == 1)
 	{
-		Root::notifySerial(m_id, ON_OFF, 0);
+		Root::notifySerial(m_id, Conf::ON_OFF, 0);
 		setState(0);
 	}
 }

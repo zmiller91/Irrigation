@@ -19,7 +19,7 @@ class Sensor: public Component
 
  public:
 	 Sensor();
-	 Sensor(int, unsigned long, int);
+	 Sensor(int, int);
 	 int poll(); // returns the result of the poll
 	 float getAverage();
 	 void clearAverage(); 

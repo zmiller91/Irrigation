@@ -14,8 +14,6 @@ class Component
 {
  protected:
 	 int m_state;
-	 int m_numUsers;
-	 unsigned long m_timeOn;
 	 unsigned long m_scheduledOn;
 	 unsigned long m_scheduledOff;
 	 unsigned long m_lastUpdate;
@@ -23,8 +21,8 @@ class Component
 
  public:
 	Component();
-	Component(int, unsigned long);
-	void schedule(unsigned long, unsigned long);
+	Component(int);
+	void schedule(unsigned long, unsigned long, unsigned long);
 	int getState();
 	void setState(int);
 	unsigned long getLastUpdate();

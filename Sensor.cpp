@@ -5,12 +5,13 @@
 #include "Component.h"
 #include "Sensor.h"
 #include "Root.h"
+#include "Conf.h"
 
 Sensor::Sensor() {};
-Sensor::Sensor(int id, unsigned long scheduledOn, int analogPin):
+Sensor::Sensor(int id, int analogPin):
 
 	// Construct super class
-	Component(id, scheduledOn)
+	Component(id)
 {
 	m_analogPin = analogPin;
 	m_numPolls = 0;
@@ -55,7 +56,7 @@ void Sensor::handle(unsigned long now)
 
 		if (getState() == 0)
 		{
-			Root::notifySerial(m_id, ON_OFF, 1);
+			Root::notifySerial(m_id, Conf::ON_OFF, 1);
 		}
 		else 
 		{
@@ -71,7 +72,7 @@ void Sensor::handle(unsigned long now)
 
 	else if (getState() == 1)
 	{
-		Root::notifySerial(m_id, ON_OFF, 0);
+		Root::notifySerial(m_id, Conf::ON_OFF, 0);
 		setState(0);
 	}
 }

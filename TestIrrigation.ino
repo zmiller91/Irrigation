@@ -27,17 +27,35 @@ unsigned long DP11 = 11;
 unsigned long DP12 = 12;
 unsigned long DP13 = 13;
 
-Zone ZONE("Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03, 
-	43200000, 43200000, /* Light on, Light off */
-	30000, 320000, /* Poll on, Poll off -- 30000, 900000 */
-	2750, 1000,  0, 0, 0, 0); /* Valve on, Peri on, Mixer on, Pump on, phUp on, phDown on */
+Zone ZONE;
+Conf* m_conf;
+bool m_confReceived;
+char m_serialLine[16];
 
 void setup() {
+
+	Serial.setTimeout(250);
+
+	m_confReceived = false;
+	m_conf = new Conf();
+	m_conf->setLightOn(43200000);
+	m_conf->setLightOff(43200000);
+	m_conf->setPollOn(500);
+	m_conf->setPollOff(500);
+	m_conf->setValveOpen(2750);
+	m_conf->setPeriPumpOn(500);
+	m_conf->setWaterPumpOn(0);
+	m_conf->setMixerOn(0);
+	m_conf->setMinTemp(143);
+	m_conf->setMaxTemp(148);
+	m_conf->setMinWater(350);
+
+	ZONE = Zone(m_conf, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03);
+
 	Serial.begin(9600);
 	Serial.println("test");
-	ZONE.test();
-	pinMode(13, OUTPUT);
-	digitalWrite(13, 1);
+	//ZONE.allOff();
+	//ZONE.test();
 }
 
 void loop() {
@@ -45,5 +63,103 @@ void loop() {
 	//ZONE.allOff();
 	//ZONE.ledBlink(3000);
 	//ZONE.test();
-	ZONE.execute();
+	update();
+	//if (m_confReceived)
+	if (true)
+	{
+		ZONE.execute();
+	}
+}
+
+void update() {
+//	Serial.println("updating");
+	String incomming = Serial.readString();
+	if (incomming.length() > 0)
+	{
+		char charArray[16];//as 1 char space for null is also required
+		strcpy(charArray, incomming.c_str());
+
+		char* val1 = strtok(charArray, ":");
+		char* val2 = strtok(NULL, ":"); // off = 0, on = 1, min = 2, max = 3
+		char* val3 = strtok(NULL, ":");
+		if (val1 && val2 && val3)
+		{
+			int arduinoConstant = atoi(val1);
+			int action = atoi(val2);
+			Serial.println(val1);
+			Serial.println(val2);
+			unsigned long newVal = strtoul(val3, NULL, 0);
+
+			switch (arduinoConstant)
+			{
+			case Conf::LIGHT_ID:
+
+				if (action == 0)
+				{
+					m_conf->setLightOff(newVal);
+				}
+				else if (action == 1)
+				{
+					m_conf->setLightOn(newVal);
+				}
+
+				break;
+
+			case Conf::POLL_ID:
+				if (action == 0)
+				{
+					m_conf->setPollOff(newVal);
+				}
+				else if (action == 1)
+				{
+					m_conf->setPollOn(newVal);
+				}
+
+				break;
+
+			case Conf::SOLENOID_ID:
+
+				if (action == 1)
+				{
+					m_conf->setValveOpen(newVal);
+				}
+
+				break;
+
+			case Conf::PERI_PUMP_ID:
+
+				if (action == 1)
+				{
+					m_conf->setPeriPumpOn(newVal);
+				}
+
+				break;
+
+			case Conf::PUMP_ID:
+
+				if (action == 1)
+				{
+					m_conf->setWaterPumpOn(newVal);
+				}
+
+				break;
+
+			case Conf::MIXER_ID:
+
+				if (action == 1)
+				{
+					m_conf->setMixerOn(newVal);
+				}
+
+				break;
+			}
+		}
+		else if (val1 && atoi(val1) == -1)
+		{
+			m_confReceived = true;
+		}
+
+		//delete val1, val2, val3;
+	}
+//	Serial.println("done updating");
 }

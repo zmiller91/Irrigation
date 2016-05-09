@@ -12,11 +12,14 @@
 #include "Component.h"
 #include "Sensor.h"
 #include "BaseZone.h"
+#include "Conf.h"
 
 
 class Zone : public BaseZone
 {
  private:
+	 Conf* m_conf;
+	 
 	 Component m_light;
 	 Component m_valve;
 	 Component m_periPump;
@@ -34,20 +37,13 @@ class Zone : public BaseZone
 	 int m_photoAve;
 	 int m_tempAve;
 
-	 bool m_watering;
-	 unsigned long m_pauseWatering;
-
 	 bool m_polling;
-	 unsigned long m_pollOn;
-	 unsigned long m_pollOff;
 	 unsigned long m_nextPoll;
 
 	 bool m_isDay;
-	 unsigned long m_lightOff;
 	 unsigned long m_nextDay;
 
 	 bool isIrrigating();
-
 	 void irrigate(unsigned long);
 	 void controlTemp(unsigned long);
 	 void monitor(unsigned long);
@@ -66,10 +62,7 @@ class Zone : public BaseZone
 
 	 Zone();
 
-	 Zone(String, int, int, int, int, int, int, int, 
-		 unsigned long, unsigned long, unsigned long, unsigned long,
-		 unsigned long, unsigned long, unsigned long, unsigned long, 
-		 unsigned long, unsigned long);
+	 Zone(Conf*, String, int, int, int, int, int, int, int);
 
 	 void execute();
 	 void clearRegister();
