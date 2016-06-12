@@ -12,11 +12,11 @@ Root::~Root(){}
 
 
 void Root::notifySerial(int component_id, int output_type, int output) {
-	//Serial.print(Conf::ARDUINO_ID);
-	//Serial.print(":");
-	//Serial.print(component_id);
-	//Serial.print(":");
-	//Serial.print(output_type);
-	//Serial.print(":");
-	//Serial.println(output);
+	Serial.print(Conf::ARDUINO_ID);
+	Serial.print(":");
+	Serial.print(component_id);
+	Serial.print(":");
+	Serial.print(output_type);
+	Serial.print(":");
+	Serial.println(output);
 }

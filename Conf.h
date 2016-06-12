@@ -92,7 +92,14 @@ public:
 		TEMP_SENSOR_ID = 3002,
 
 		// Admin/Debug/Other IDs.  All these IDs start with 4000
-		MEM_USAGE_ID = 4000
+		MEM_USAGE_ID = 4000,
+
+		// Configuration action types
+		CONF_ON_OFF = 5000,
+		CONF_MIN = 5001,
+		CONF_MAX = 5002,
+		CONF_TIME_ON = 5003,
+		CONF_TIME_OFF = 5004
 	};
 
 	void setValveOpen(unsigned long);

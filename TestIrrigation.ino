@@ -42,19 +42,19 @@ void setup() {
 	m_conf->setLightOff(43200000);
 	m_conf->setPollOn(500);
 	m_conf->setPollOff(500);
-	m_conf->setValveOpen(2750);
-	m_conf->setPeriPumpOn(500);
+	m_conf->setValveOpen(1000);
+	m_conf->setPeriPumpOn(1000);
 	m_conf->setWaterPumpOn(0);
 	m_conf->setMixerOn(0);
-	m_conf->setMinTemp(143);
-	m_conf->setMaxTemp(148);
-	m_conf->setMinWater(350);
+	m_conf->setMinTemp(0);
+	m_conf->setMaxTemp(10000);
+	m_conf->setMinWater(10000);
 
 	ZONE = Zone(m_conf, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03);
 
 	Serial.begin(9600);
 	Serial.println("test");
-	//ZONE.allOff();
+	ZONE.allOff();
 	//ZONE.test();
 }
 
@@ -94,11 +94,11 @@ void update() {
 			{
 			case Conf::LIGHT_ID:
 
-				if (action == 0)
+				if (action == Conf::CONF_TIME_OFF)
 				{
 					m_conf->setLightOff(newVal);
 				}
-				else if (action == 1)
+				else if (action == Conf::CONF_TIME_ON)
 				{
 					m_conf->setLightOn(newVal);
 				}
@@ -106,11 +106,11 @@ void update() {
 				break;
 
 			case Conf::POLL_ID:
-				if (action == 0)
+				if (action == Conf::CONF_TIME_OFF)
 				{
 					m_conf->setPollOff(newVal);
 				}
-				else if (action == 1)
+				else if (action == Conf::CONF_TIME_ON)
 				{
 					m_conf->setPollOn(newVal);
 				}
@@ -119,7 +119,7 @@ void update() {
 
 			case Conf::SOLENOID_ID:
 
-				if (action == 1)
+				if (action == Conf::CONF_TIME_ON)
 				{
 					m_conf->setValveOpen(newVal);
 				}
@@ -128,7 +128,7 @@ void update() {
 
 			case Conf::PERI_PUMP_ID:
 
-				if (action == 1)
+				if (action == Conf::CONF_TIME_ON)
 				{
 					m_conf->setPeriPumpOn(newVal);
 				}
@@ -137,7 +137,7 @@ void update() {
 
 			case Conf::PUMP_ID:
 
-				if (action == 1)
+				if (action == Conf::CONF_TIME_ON)
 				{
 					m_conf->setWaterPumpOn(newVal);
 				}
@@ -146,7 +146,7 @@ void update() {
 
 			case Conf::MIXER_ID:
 
-				if (action == 1)
+				if (action == Conf::CONF_TIME_ON)
 				{
 					m_conf->setMixerOn(newVal);
 				}
