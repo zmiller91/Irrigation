@@ -1,7 +1,5 @@
 #include "BaseZone.h"
 
-BaseZone::BaseZone(){}
-
 BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity)
 {
 	m_name = name;

@@ -96,7 +96,6 @@ protected:
 	int CLOCK_PIN;
 
 public:
-	BaseZone();
 	BaseZone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity);
 	void test();
 	void allOn();

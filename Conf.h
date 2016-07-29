@@ -57,7 +57,6 @@ private:
 public:
 
 	Conf();
-	~Conf();
 
 	enum Constants
 	{
@@ -123,8 +122,6 @@ public:
 	int getMinWater();
 	int getMinTemp();
 	int getMaxTemp();
-
-private:
 
 };
 

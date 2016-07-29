@@ -3,7 +3,6 @@
 #include "Conf.h"
 
 Conf::Conf() {}
-Conf::~Conf() {}
 
 void Conf::setValveOpen(unsigned long value)
 {

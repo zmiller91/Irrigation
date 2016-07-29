@@ -3,7 +3,10 @@
 #include "Root.h"
 #include "Conf.h"
 
-Sensor::Sensor() {};
+/*
+    A sensor is a component with added functionality. It has
+	the ability to take readings from physical components.
+*/
 Sensor::Sensor(int id, int analogPin):
 
 	// Construct super class
@@ -15,9 +18,13 @@ Sensor::Sensor(int id, int analogPin):
 	m_polling = false;
 }
 
+/*
+    Read and return the value of the sensor
+
+	@return int
+*/
 int Sensor::poll()
 {
-
 	// http://forum.arduino.cc/index.php?topic=256921.0
 	// The arduino uses a multiplexer for its inputs which means
 	// sensors can influence the next sensors readings if the electrical
@@ -30,17 +37,29 @@ int Sensor::poll()
 	return read;
 }
 
+/*
+    Return the average reading for the most recent poll
+
+    @return float
+*/
 float Sensor::getAverage()
 {
 	return m_sumPolls / m_numPolls;
 }
 
+/*
+    Set the aberage back to 0
+*/
 void Sensor::clearAverage()
 {
 	m_sumPolls = 0;
 	m_numPolls = 0;
 }
 
+/*
+    Turn the sensor on or off, if it needs to be either. If
+	the sensor is on, then read the sensor.
+*/
 void Sensor::handle(unsigned long now)
 
 	// If the sensor is scheduled to be on, then turn

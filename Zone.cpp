@@ -1,8 +1,10 @@
 #include "Root.h"
 #include "BaseZone.h"
 #include "Zone.h"
-
-Zone::Zone(){};
+/*
+    A zone is controller for the entire application. It's
+	responsible for scheduling components and reading sensors. 
+*/
 Zone::Zone(Conf* conf, String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity) :
 
 	// Construct member objects
@@ -33,6 +35,9 @@ Zone::Zone(Conf* conf, String name, int data, int latch, int clock, int moisture
 	m_nextDay = 0;
 }
 
+/*
+    Reset the register to off
+*/
 void Zone::clearRegister()
 {
 	for (int i = 0; i < NUM_BITS; i++)
@@ -43,7 +48,9 @@ void Zone::clearRegister()
 	putToRegister();
 }
 
-// Main function. This gets executed in loop()
+/*
+    Main function that gets called in a loop. 
+*/
 void Zone::execute()
 {
 	unsigned long now = millis();
@@ -101,6 +108,10 @@ void Zone::handleComponents(unsigned long now)
 	m_light.handle(now);
 }
 
+/*
+    Coordinate the pumps and valves in order to 
+	irrigate if necessary
+*/
 void Zone::irrigate(unsigned long now)
 {
 	//if (!m_watering) {  // uncomment this line when testing
@@ -127,11 +138,19 @@ void Zone::irrigate(unsigned long now)
 	}
 }
 
+/*
+    Utility method for checking if an irrigation is in progress
+
+    return bool
+*/
 bool Zone::isIrrigating() 
 {
 	return m_waterPump.getState() || m_periPump.getState() || m_mixer.getState() || m_phDown.getState() || m_phUp.getState() || m_valve.getState();
 }
 
+/*
+    Read and report the sensor values
+*/
 void Zone::monitor(unsigned long now)
 {
 	// start polling if a poll has taken place
@@ -185,9 +204,6 @@ void Zone::monitor(unsigned long now)
 		Root::notifySerial(m_photoresistor.getId(), Conf::POLL_RESULTS, m_photoAve);
 		Root::notifySerial(m_tempSensor.getId(), Conf::POLL_RESULTS, m_tempAve);
 
-		displayMoistureLEDs(m_moisutreAve);
-		displayTempLEDs(m_tempAve);
-
 		m_nextPoll = now + m_conf->getPollOff();
 		m_polling = false;
 
@@ -197,6 +213,9 @@ void Zone::monitor(unsigned long now)
 	}
 }
 
+/*
+    Turn the light on or off, if it needs to be
+*/
 void Zone::illuminate(unsigned long now)
 {
 	if (!m_isDay && m_nextDay < now) 
@@ -216,6 +235,10 @@ void Zone::illuminate(unsigned long now)
 	}
 }
 
+/*
+    Turn the fans on or off, depnding on if we're inside
+	the acceptable temperature band
+*/
 void Zone::controlTemp(unsigned long now)
 {
 	int maxTemp = m_conf->getMaxTemp();

@@ -11,10 +11,7 @@ class Root
 {
 public:
 	Root();
-	~Root();
 	static void notifySerial(int, int, int);
-
-private:
 
 };
 

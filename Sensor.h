@@ -16,7 +16,6 @@ class Sensor: public Component
 	 bool m_polling;
 
  public:
-	 Sensor();
 	 Sensor(int, int);
 	 int poll(); // returns the result of the poll
 	 float getAverage();

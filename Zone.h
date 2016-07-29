@@ -49,9 +49,6 @@ class Zone : public BaseZone
 	 void illuminate(unsigned long);
 	 void handleComponents(unsigned long);
 
-	 void displayMoistureLEDs(int);
-	 void displayTempLEDs(int);
-
 	 void mapRegister();
 
  protected:
@@ -59,10 +56,7 @@ class Zone : public BaseZone
 
  public:
 
-	 Zone();
-
 	 Zone(Conf*, String, int, int, int, int, int, int, int);
-
 	 void execute();
 	 void clearRegister();
 };
