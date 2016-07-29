@@ -1,6 +1,3 @@
-// 
-// 
-// 
 #include "BaseZone.h"
 
 BaseZone::BaseZone(){}
@@ -8,6 +5,7 @@ BaseZone::BaseZone(){}
 BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity)
 {
 	m_name = name;
+
 	// initialize data pins and analogin inputs
 	DATA_PIN = data;
 	LATCH_PIN = latch;
@@ -28,6 +26,10 @@ BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, in
 	pinMode(humidity, INPUT);
 }
 
+/*
+    Turn each led on, one by one, then blink 
+	all leds at once.
+*/
 void BaseZone::test()
 {
 	ledOneByOne(250);
@@ -36,6 +38,9 @@ void BaseZone::test()
 	}
 }
 
+/*
+    Turn leds on one by one.
+*/
 void BaseZone::ledOneByOne(int wait) {
 	int numBits = NUM_REGISTERS * 8;
 	int prevBit = 0;
@@ -50,6 +55,9 @@ void BaseZone::ledOneByOne(int wait) {
 	putToRegister();
 }
 
+/*
+    Turn all registers on
+*/
 void BaseZone::allOn() {
 	int numBits = NUM_REGISTERS * 8;
 	for (int bit = 0; bit < numBits; bit++) {
@@ -58,6 +66,9 @@ void BaseZone::allOn() {
 	putToRegister();
 }
 
+/*
+    Turn all output off
+*/
 void BaseZone::allOff() {
 	int numBits = NUM_REGISTERS * 8;
 	for (int bit = 0; bit < numBits; bit++) {
@@ -66,6 +77,9 @@ void BaseZone::allOff() {
 	putToRegister();
 }
 
+/*
+    Blink all leds at the same time
+*/
 void BaseZone::ledBlink(int wait) {
 	int numBits = NUM_REGISTERS * 8;
 	for (int bit = 0; bit < numBits; bit++) {
@@ -80,20 +94,23 @@ void BaseZone::ledBlink(int wait) {
 	delay(wait);
 }
 
+/*
+    Map a zone's output to the physical hardware
+*/
 void BaseZone::putToRegister() {
 
 	// Begin to write to the registers
 	digitalWrite(LATCH_PIN, 0);
 
 	// There are three registers, since we are
-	// shifting out the right most register needs
+	// shifting out, the right most register needs
 	// to be shifted first and the left most register
 	// needs to be shifted last
 	for (int reg = (NUM_REGISTERS - 1); reg >= 0; reg--) {
 
 		// An 8-bit register can be represented as an 
 		// 8-bit character. To construct the bit mask, simply
-		// loop through register entries in the zone array and 
+		// loop through register entries in the bitmask and 
 		// set all corresponding character bits
 
 		// Construct bitmask

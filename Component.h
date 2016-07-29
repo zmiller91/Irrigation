@@ -1,5 +1,3 @@
-// Component.h
-
 #ifndef _COMPONENT_h
 #define _COMPONENT_h
 

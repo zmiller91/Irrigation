@@ -1,6 +1,3 @@
-// 
-// 
-// 
 #include "Root.h"
 #include "BaseZone.h"
 #include "Zone.h"
@@ -30,6 +27,7 @@ Zone::Zone(Conf* conf, String name, int data, int latch, int clock, int moisture
 
 	m_polling = false;
 	m_nextPoll = 0;
+	m_lastRTP = 0;
 
 	m_isDay = false;
 	m_nextDay = 0;
@@ -80,6 +78,14 @@ void Zone::mapRegister()
 
 }
 
+/*
+    This method 'touches' each component. Basically, it
+	tell's every component they should update. 
+
+	TODO: Since every physical item inherts Component, maybe
+	these should go in an array of Components, so we don't have
+	to explicitly handle each component.
+*/
 void Zone::handleComponents(unsigned long now)
 {
 	m_waterPump.handle(now);
@@ -113,16 +119,7 @@ void Zone::irrigate(unsigned long now)
 		// Turn on the mixers to mix nutrients
 		m_mixer.schedule(m_periPump.getScheduledOff() - now, m_conf->getMixerOn(), now);
 
-		// Adjust the ph
-
-		// Below is where the logic for choosing if the ph needs to go up or down. This
-		// is set to be "random" when testing
-
-//		unsigned long phDelay = 0;
-//		m_phUp.schedule(m_mixer.getScheduledOff() - now, now);
-//		m_phDown.schedule(m_mixer.getScheduledOff() - now, now);
-//		phDelay = m_phUp.getScheduledOff();
-
+		// TODO: Adjust the ph
 		// TODO: Schedule mixer. Will require having a queue of schedules. 
 
 		// Open the valve to water the plants
@@ -137,10 +134,26 @@ bool Zone::isIrrigating()
 
 void Zone::monitor(unsigned long now)
 {
+	// start polling if a poll has taken place
+	if (m_lastRTP > 0) {
+		m_tempSensor.poll();
+	}
+
+	// Clear the average and control the temp if 
+	// we're not polling and the last real time poll
+	// was 30 seconds ago
+	if (!m_polling && (now - m_lastRTP) > 3000) {
+		m_tempAve = m_tempSensor.getAverage();
+		controlTemp(now);
+		m_tempSensor.clearAverage();
+		m_lastRTP = now;
+	}
+
 	if (!m_polling && m_nextPoll < now) {
 
 		// Nofiy serial that poll is turning on
 		Root::notifySerial(Conf::POLL_ID, Conf::ON_OFF, 1);
+
 		// Clear all average and set a schedule
 		m_moistureSensor.clearAverage();
 		m_photoresistor.clearAverage();
@@ -151,6 +164,11 @@ void Zone::monitor(unsigned long now)
 		m_tempSensor.schedule(0, m_conf->getPollOn(), now);
 
 		m_polling = true;
+
+		// Only do this the first time
+		if (m_lastRTP == 0) {
+			m_lastRTP = now;
+		}
 	}
 
 	else if (m_polling && m_moistureSensor.getState() == 0 && m_photoresistor.getState() == 0 && m_tempSensor.getState() == 0)
@@ -181,7 +199,6 @@ void Zone::monitor(unsigned long now)
 
 void Zone::illuminate(unsigned long now)
 {
-	//Serial.println("Illuminating");
 	if (!m_isDay && m_nextDay < now) 
 	{
 		// Notify serial that light is turning on
@@ -197,7 +214,6 @@ void Zone::illuminate(unsigned long now)
 		m_nextDay = now + m_conf->getLightOff();
 		m_isDay = false;
 	}
-	//Serial.println("Done illuminating");
 }
 
 void Zone::controlTemp(unsigned long now)
@@ -206,11 +222,16 @@ void Zone::controlTemp(unsigned long now)
 	int minTemp = m_conf->getMinTemp();
 	int curTemp = m_tempSensor.poll();
 
+	// If the average temp, or the current temp, are greater
+	// then the maximum allowed temp, then turn the fans on
 	if (m_fan.getState() == 0 && (m_tempAve > maxTemp || curTemp > maxTemp)) 
 	{
 		m_fan.setState(1);
 		Root::notifySerial(Conf::FAN_ID, Conf::ON_OFF, 1);
 	}
+
+	// If the average temp, or the current temp, are less
+	// than the maximum allowed temp, then turn the fans off
 	else if(m_tempAve <= minTemp || curTemp <= minTemp)
 	{
 		if (m_fan.getState() == 1)
@@ -219,32 +240,4 @@ void Zone::controlTemp(unsigned long now)
 		}
 		m_fan.setState(0);
 	}
-}
-
-void Zone::displayMoistureLEDs(int level)
-{
-
-	// 0 is the minimum reading and 550 is the maximum reading. 
-	// Dry watering should start when moisture level is 300. These
-	// are all arbitrary at the moment.
-
-	m_bitmask[MOISTURE_LED_LOW] = (0 <= level && level < 200);
-	m_bitmask[MOISTURE_LED_LMED] = (200 <= level && level < 300);
-	m_bitmask[MOISTURE_LED_GOOD] = (300 <= level && level < 400);
-	m_bitmask[MOISTURE_LED_HMED] = (400 <= level && level < 500);
-	m_bitmask[MOISTURE_LED_HIGH] = (500 <= level);
-}
-
-void Zone::displayTempLEDs(int level)
-{
-
-	// 0 is the minimum reading and 550 is the maximum reading. 
-	// Dry watering should start when moisture level is 300. These
-	// are all arbitrary at the moment.
-
-	m_bitmask[TEMP_LED_LOW] = (0 <= level && level < 50);
-	m_bitmask[TEMP_LED_LMED] = (50 <= level && level < 100);
-	m_bitmask[TEMP_LED_GOOD] = (100 <= level && level < 160);
-	m_bitmask[TEMP_LED_HMED] = (160 <= level && level < 265);
-	m_bitmask[TEMP_LED_HIGH] = (265 <= level);
 }

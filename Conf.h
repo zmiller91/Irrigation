@@ -1,5 +1,3 @@
-// Conf.h
-
 #ifndef _CONF_h
 #define _CONF_h
 

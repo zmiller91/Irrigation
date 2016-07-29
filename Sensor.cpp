@@ -1,7 +1,3 @@
-// 
-// 
-// 
-
 #include "Component.h"
 #include "Sensor.h"
 #include "Root.h"
@@ -60,10 +56,6 @@ void Sensor::handle(unsigned long now)
 		}
 		else 
 		{
-			// http://forum.arduino.cc/index.php?topic=256921.0
-			// The arduino uses a multiplexer for its inputs which means
-			// sensors can influence the next sensors readings if the electrical
-			// impedence is great enough. Therefore, ignore
 			poll();
 		}
 

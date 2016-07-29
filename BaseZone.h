@@ -1,5 +1,3 @@
-// BaseZone.h
-
 #ifndef _BASEZONE_h
 #define _BASEZONE_h
 
@@ -96,20 +94,6 @@ protected:
 	int DATA_PIN;
 	int LATCH_PIN;
 	int CLOCK_PIN;
-
-	/*
-	* Strings are insanely expensive when limited to 36k of free
-	* memory.  In order to use as few free memory as possible, we
-	* need to map common actions and components to IDs so that we
-	* can map the serial output to an action or component. Below
-	* are the maps for common actions and components.
-	*/
-
-	// TODO: We should rethink this conf. It probably needs to go in a super
-	// duper base class that everything inherits.  That way we aren't
-	// duplicating work in Component.cpp
-
-
 
 public:
 	BaseZone();

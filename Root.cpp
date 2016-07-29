@@ -1,15 +1,10 @@
-// 
-// 
-// 
-
+//TODO: Rename class to 'Serial'
 #include "Root.h"
 #include "Conf.h"
 
 Root::Root(){
 	Serial.begin(9600);
 }
-Root::~Root(){}
-
 
 void Root::notifySerial(int component_id, int output_type, int output) {
 	Serial.print(Conf::ARDUINO_ID);

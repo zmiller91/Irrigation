@@ -1,5 +1,3 @@
-// Root.h
-
 #ifndef _ROOT_h
 #define _ROOT_h
 

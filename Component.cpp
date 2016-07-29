@@ -1,6 +1,3 @@
-// 
-// 
-// 
 #include "Component.h"
 #include "MemoryFree.h"
 #include "Root.h"
@@ -12,9 +9,6 @@ Component::Component() {
 };
 Component::Component(int id)
 {
-	//int fm = freeMemory();
-	//Root::notifySerial(1, 1, 1);
-
 	m_id = id;
 	m_scheduledOn = 0;
 	m_scheduledOff = 0;
@@ -63,7 +57,6 @@ int Component::getId()
 void Component::handle(unsigned long now)
 {
 	// If the component is scheduled to be on, then turn it on
-
 	if (getScheduledOn() <= now && now < getScheduledOff())
 	{
 
@@ -77,6 +70,7 @@ void Component::handle(unsigned long now)
 		setState(1);
 	}
 
+	// If the component on and it's not scheduled, turn it off
 	else if (getState() == 1)
 	{
 		Root::notifySerial(m_id, Conf::ON_OFF, 0);

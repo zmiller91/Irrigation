@@ -1,5 +1,3 @@
-// Zone.h
-
 #ifndef _ZONE_h
 #define _ZONE_h
 
@@ -39,6 +37,7 @@ class Zone : public BaseZone
 
 	 bool m_polling;
 	 unsigned long m_nextPoll;
+	 unsigned long m_lastRTP; //RTP = real time poll
 
 	 bool m_isDay;
 	 unsigned long m_nextDay;
