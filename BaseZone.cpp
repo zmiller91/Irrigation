@@ -1,5 +1,11 @@
 #include "BaseZone.h"
 
+BaseZone::BaseZone() {}
+
+/*
+    This class defines the basic functionality of a zone. Included
+	are global variables that define the 
+*/
 BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity)
 {
 	m_name = name;

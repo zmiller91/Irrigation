@@ -3,6 +3,8 @@
 #include "Root.h"
 #include "Conf.h"
 
+Sensor::Sensor() {}
+
 /*
     A sensor is a component with added functionality. It has
 	the ability to take readings from physical components.

@@ -56,6 +56,7 @@ class Zone : public BaseZone
 
  public:
 
+	 Zone();
 	 Zone(Conf*, String, int, int, int, int, int, int, int);
 	 void execute();
 	 void clearRegister();

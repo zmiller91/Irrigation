@@ -5,6 +5,7 @@
     A zone is controller for the entire application. It's
 	responsible for scheduling components and reading sensors. 
 */
+Zone::Zone() {}
 Zone::Zone(Conf* conf, String name, int data, int latch, int clock, int moisture, int photo, int temp, int humidity) :
 
 	// Construct member objects
