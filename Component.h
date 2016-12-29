@@ -7,27 +7,29 @@
 	#include "WProgram.h"
 #endif
 
+#include "Conf.h"
 
 class Component
 {
  protected:
+	 Conf* m_conf;
 	 int m_state;
-	 unsigned long m_scheduledOn;
-	 unsigned long m_scheduledOff;
 	 unsigned long m_lastUpdate;
 	 int m_id;
+	 virtual void setup(unsigned long);
+	 virtual void execute(unsigned long);
+	 virtual void teardown(unsigned long);
 
  public:
 	Component();
-	Component(int);
-	void schedule(unsigned long, unsigned long, unsigned long);
+	Component(Conf*, int, int);
+	int m_register;
+	bool isOn();
 	int getState();
 	void setState(int);
 	unsigned long getLastUpdate();
-	unsigned long getScheduledOn();
-	unsigned long getScheduledOff();
-	void handle(unsigned long);
 	int getId();
+	void run(unsigned long);
 };
 
 

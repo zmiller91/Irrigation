@@ -8,48 +8,41 @@
 #endif
 
 #include "Component.h"
+#include "ScheduledComponent.h"
+#include "TimedComponent.h"
 #include "Sensor.h"
 #include "BaseZone.h"
 #include "Conf.h"
-
+#include "HVAC.h"
+#include "Irrigation.h"
 
 class Zone : public BaseZone
 {
  private:
+
 	 Conf* m_conf;
-	 
-	 Component m_light;
-	 Component m_valve;
-	 Component m_periPump;
-	 Component m_mixer;
-	 Component m_waterPump;
-	 Component m_phUp;
-	 Component m_phDown;
-	 Component m_fan;
 
-	 Sensor m_moistureSensor;
-	 Sensor m_photoresistor;
-	 Sensor m_tempSensor;
+	 // Light
+	 ScheduledComponent* m_light;
 
-	 int m_moisutreAve;
-	 int m_photoAve;
-	 int m_tempAve;
+	 // HVAC
+	 Sensor* m_temp;
+	 Component* m_heater;
+	 Component* m_fan;
 
-	 bool m_polling;
-	 unsigned long m_nextPoll;
-	 unsigned long m_lastRTP; //RTP = real time poll
+	 // Irrigation
+	 Sensor* m_moisture;
+	 TimedComponent* m_reseviorPump;
+	 TimedComponent* m_waterPump;
+	 TimedComponent* m_PP_1;
+	 TimedComponent* m_PP_2;
+	 TimedComponent* m_PP_3;
+	 TimedComponent* m_PP_4;
+	 TimedComponent* m_mixer;
 
-	 bool m_isDay;
-	 unsigned long m_nextDay;
-
-	 bool isIrrigating();
-	 void irrigate(unsigned long);
-	 void controlTemp(unsigned long);
-	 void monitor(unsigned long);
-	 void illuminate(unsigned long);
-	 void handleComponents(unsigned long);
-
-	 void mapRegister();
+	 // Actions
+	 HVAC* m_hvac;
+	 Irrigation* m_irrigation;
 
  protected:
 	 String m_name;

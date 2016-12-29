@@ -19,8 +19,6 @@ BaseZone::BaseZone(String name, int data, int latch, int clock, int moisture, in
 	TEMP_SENSOR = temp;
 	HUMIDITY_SENSOR = humidity;
 
-	NUM_REGISTERS = 3;
-
 	pinMode(data, OUTPUT);
 	pinMode(clock, OUTPUT);
 	pinMode(latch, OUTPUT);

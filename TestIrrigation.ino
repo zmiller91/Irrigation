@@ -1,9 +1,3 @@
-
-#include "MemoryFree.h"
-#include "Root.h"
-#include "Component.h"
-#include "Sensor.h"
-#include "BaseZone.h"
 #include "Zone.h"
 
 unsigned long AI_00 = 0;
@@ -11,7 +5,6 @@ unsigned long AI_01 = 1;
 unsigned long AI_02 = 2;
 unsigned long AI_03 = 3;
 unsigned long AI_04 = 4;
-unsigned long AI_05 = 5;
 
 // Digitial Pens
 unsigned long DP2 = 2;
@@ -34,25 +27,32 @@ char m_serialLine[16];
 
 void setup() {
 
-	Serial.setTimeout(250);
+	// This is blocking, keep it as small
+	// as possible
+	Serial.setTimeout(100);
 
 	m_confReceived = false;
 	m_conf = new Conf();
-	m_conf->setLightOn(43200000);
-	m_conf->setLightOff(43200000);
-	m_conf->setPollOn(500);
-	m_conf->setPollOff(500);
-	m_conf->setValveOpen(1000);
-	m_conf->setPeriPumpOn(1000);
-	m_conf->setWaterPumpOn(0);
-	m_conf->setMixerOn(0);
-	m_conf->setMinTemp(0);
-	m_conf->setMaxTemp(10000);
-	m_conf->setMinWater(10000);
+	m_conf->lightOn = 3000;
+	m_conf->lightOff = 1000;
+	m_conf->minTemp = 300;
+	m_conf->maxTemp = 700;
 
-	ZONE = Zone(m_conf, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03);
+	m_conf->minWater = 500;
+	m_conf->reseviorPumpOpen = 3000;
+	m_conf->waterPumpOpen = 3000;
+	m_conf->PP1Open = 100;
+	m_conf->PP2Open = 100;
+	m_conf->PP3Open = 100;
+	m_conf->PP4Open = 100;
+	m_conf->mixerOn = 500;
+
+	m_conf->pollOn = 500;
+	m_conf->pollOff = 500;
 
 	Serial.begin(9600);
+	ZONE = Zone(m_conf, "Zone 1", DP12, DP11, DP10, AI_00, AI_01, AI_02, AI_03);
+
 	Serial.println("test");
 	ZONE.allOff();
 	//ZONE.test();
@@ -62,7 +62,7 @@ void loop() {
 	//ZONE.allOn(); 
 	//ZONE.allOff();
 	//ZONE.ledBlink(3000);
-	//ZONE.test();
+	// ZONE.test();
 	update();
 	//if (m_confReceived)
 	if (true)
@@ -74,88 +74,116 @@ void loop() {
 void update() {
 //	Serial.println("updating");
 	String incomming = Serial.readString();
-	if (incomming.length() > 0)
-	{
+	if (incomming.length() > 0) {
+		Serial.print("Received: ");
+		Serial.println(incomming); 
+
 		char charArray[16];//as 1 char space for null is also required
 		strcpy(charArray, incomming.c_str());
 
 		char* val1 = strtok(charArray, ":");
-		char* val2 = strtok(NULL, ":"); // off = 0, on = 1, min = 2, max = 3
+		char* val2 = strtok(NULL, ":");
 		char* val3 = strtok(NULL, ":");
-		if (val1 && val2 && val3)
-		{
+		if (val1 && val2 && val3) {
 			int arduinoConstant = atoi(val1);
 			int action = atoi(val2);
-			Serial.println(val1);
-			Serial.println(val2);
 			unsigned long newVal = strtoul(val3, NULL, 0);
 
-			switch (arduinoConstant)
-			{
+			switch (arduinoConstant) {
+
+			case Conf::TEMP_SENSOR_ID:
+
+				if (action == Conf::CONF_MAX) {
+					m_conf->maxTemp = newVal;
+				}
+				else if (action == Conf::CONF_MIN) {
+					m_conf->minTemp = newVal;
+				}
 			case Conf::LIGHT_ID:
 
-				if (action == Conf::CONF_TIME_OFF)
-				{
-					m_conf->setLightOff(newVal);
+				if (action == Conf::CONF_TIME_OFF) {
+					m_conf->lightOn = newVal;
 				}
-				else if (action == Conf::CONF_TIME_ON)
-				{
-					m_conf->setLightOn(newVal);
+				else if (action == Conf::CONF_TIME_ON) {
+					m_conf->lightOff = newVal;
 				}
 
 				break;
 
 			case Conf::POLL_ID:
-				if (action == Conf::CONF_TIME_OFF)
-				{
-					m_conf->setPollOff(newVal);
+				if (action == Conf::CONF_TIME_OFF) {
+					m_conf->pollOff = newVal;
 				}
-				else if (action == Conf::CONF_TIME_ON)
-				{
-					m_conf->setPollOn(newVal);
+				else if (action == Conf::CONF_TIME_ON) {
+					m_conf->pollOn = newVal;
 				}
 
 				break;
 
-			case Conf::SOLENOID_ID:
+			case Conf::MOISTURE_SENSOR_ID:
 
-				if (action == Conf::CONF_TIME_ON)
-				{
-					m_conf->setValveOpen(newVal);
+				if (action == Conf::CONF_MIN) {
+					m_conf->minWater = newVal;
+				}
+
+			case Conf::RESEVIOR_PUMP_ID:
+
+				if (action == Conf::CONF_TIME_ON) {
+					m_conf->reseviorPumpOpen = newVal;
 				}
 
 				break;
 
-			case Conf::PERI_PUMP_ID:
+			case Conf::WATER_PUMP_ID:
 
-				if (action == Conf::CONF_TIME_ON)
-				{
-					m_conf->setPeriPumpOn(newVal);
+				if (action == Conf::CONF_TIME_ON) {
+					m_conf->waterPumpOpen = newVal;
 				}
 
 				break;
 
-			case Conf::PUMP_ID:
+			case Conf::PP1_ID:
 
-				if (action == Conf::CONF_TIME_ON)
-				{
-					m_conf->setWaterPumpOn(newVal);
+				if (action == Conf::CONF_TIME_ON) {
+					m_conf->PP1Open = newVal;
+				}
+
+				break;
+
+			case Conf::PP2_ID:
+
+				if (action == Conf::CONF_TIME_ON) {
+					m_conf->PP2Open = newVal;
+				}
+
+				break;
+
+			case Conf::PP3_ID:
+
+				if (action == Conf::CONF_TIME_ON) {
+					m_conf->PP3Open = newVal;
+				}
+
+				break;
+
+			case Conf::PP4_ID:
+
+				if (action == Conf::CONF_TIME_ON) {
+					m_conf->PP4Open = newVal;
 				}
 
 				break;
 
 			case Conf::MIXER_ID:
 
-				if (action == Conf::CONF_TIME_ON)
-				{
-					m_conf->setMixerOn(newVal);
+				if (action == Conf::CONF_TIME_ON) {
+					m_conf->mixerOn = newVal;
 				}
 
 				break;
 			}
 		}
-		else if (val1 && atoi(val1) == -1)
-		{
+		else if (val1 && atoi(val1) == -1) {
 			m_confReceived = true;
 		}
 

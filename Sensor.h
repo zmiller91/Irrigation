@@ -7,21 +7,27 @@
 	#include "WProgram.h"
 #endif
 
+#include "Component.h"
+
 class Sensor: public Component
 {
  protected:
 	 int m_analogPin;
 	 float m_numPolls;
 	 float m_sumPolls;
-	 bool m_polling;
+	 float m_average;
+	 bool m_running;
+	 bool m_hasAverage;
+	 unsigned long m_start;
+	 unsigned long m_duration;
+	 virtual void execute(unsigned long);
 
  public:
 	 Sensor();
-	 Sensor(int, int);
-	 int poll(); // returns the result of the poll
+	 Sensor(Conf*, int, int);
+	 bool hasAverage();
 	 float getAverage();
-	 void clearAverage(); 
-	 void handle(unsigned long now);
+	 virtual void setup(unsigned long);
 };
 
 #endif

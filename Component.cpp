@@ -7,52 +7,19 @@
     This class defines the functionality of a component. A 
 	component is any physical item attatched to the arduino.
 */
-Component::Component() {
-	m_scheduledOn = 100;
-	m_scheduledOff = 10000;
-};
+Component::Component() {};
 
-Component::Component(int id)
+Component::Component(Conf* conf, int id, int registr)
 {
+	m_conf = conf;
 	m_id = id;
-	m_scheduledOn = 0;
-	m_scheduledOff = 0;
+	m_register = registr;
 	m_state = 0;
 	m_lastUpdate = 0;
 }
 
-/*
-    Schedule a component to turn on.
-
-	@param delay - how many milliseconds until the component turns on
-	@param timeOn - how many milliseconds the component is on
-	@param now - the current time, in milliseconds
-*/
-void Component::schedule(unsigned long delay, unsigned long timeOn, unsigned long now)
-{
-	m_scheduledOn = (now + delay);
-	m_scheduledOff = (m_scheduledOn + timeOn);
-	m_lastUpdate = millis();
-}
-
-/*
-    Get the next time a component is schedule to be off
-
-    @return long
-*/
-unsigned long Component::getScheduledOff()
-{
-	return m_scheduledOff;
-}
-
-/*
-    Get the next time a component is scheduled to be on
-
-	@return long
-*/
-unsigned long Component::getScheduledOn()
-{
-	return m_scheduledOn;
+bool Component::isOn() {
+	return m_state == 1;
 }
 
 /*
@@ -96,29 +63,16 @@ int Component::getId()
 }
 
 /*
-    Handle the component.  Turn it on if it needs to be on, 
-	turn it off if it needs to be off
+	Initialize the lifecycle
+
+	@param now - current time in millis
 */
-void Component::handle(unsigned long now)
-{
-	// If the component is scheduled to be on, then turn it on
-	if (getScheduledOn() <= now && now < getScheduledOff())
-	{
-
-		// If the current state is off, then notify serial
-		// of a state change
-		if (getState() == 0)
-		{
-			Root::notifySerial(m_id, Conf::ON_OFF, 1);
-		}
-
-		setState(1);
-	}
-
-	// If the component on and it's not scheduled, turn it off
-	else if (getState() == 1)
-	{
-		Root::notifySerial(m_id, Conf::ON_OFF, 0);
-		setState(0);
-	}
+void Component::run(unsigned long now) {
+	setup(now);
+	execute(now);
+	teardown(now);
 }
+
+void Component::setup(unsigned long now) {}
+void Component::execute(unsigned long now) {}
+void Component::teardown(unsigned long now) {}

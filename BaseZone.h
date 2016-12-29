@@ -14,7 +14,7 @@ protected:
 	int m_bitmask[24];
 	void putToRegister();
 	void ledOneByOne(int);
-	int NUM_REGISTERS;
+	int NUM_REGISTERS = 3;
 	String m_name;
 
 	// Each zone contains 3 daisy chained 8-bit shift registers
@@ -33,58 +33,21 @@ protected:
 	int REG_07 = 6;
 	int REG_08 = 7;
 	int REG_09 = 8;
-
-	int LED_01 = 9;
-	int LED_02 = 10;
-	int LED_03 = 11;
-	int LED_04 = 12;
-	int LED_05 = 13;
-	int LED_06 = 14;
-	int LED_07 = 15;
-	int LED_08 = 16;
-	int LED_09 = 17;
-	int LED_10 = 18;
-	int LED_11 = 10;
-	int LED_12 = 20;
-	int LED_13 = 21;
-	int LED_14 = 22;
-	int LED_15 = 23;
-
-	// Variables below here are not required for basic integration.  These
-	// are now application variables and are used solely for the application
-	// of this irrigation system
-
-	// Map moisture sensor leds to register
-	int MOISTURE_LED_LOW = LED_01;
-	int MOISTURE_LED_LMED = LED_02;
-	int MOISTURE_LED_GOOD = LED_03;
-	int MOISTURE_LED_HMED = LED_04;
-	int MOISTURE_LED_HIGH = LED_05;
-
-	// Map temp sensor leds to register
-	int TEMP_LED_LOW = LED_06;
-	int TEMP_LED_LMED = LED_07;
-	int TEMP_LED_GOOD = LED_08;
-	int TEMP_LED_HMED = LED_09;
-	int TEMP_LED_HIGH = LED_10;
-
-	// Map pH sensor leds to register
-	int PH_LED_LOW = LED_11;
-	int PH_LED_LMED = LED_12;
-	int PH_LED_GOOD = LED_13;
-	int PH_LED_HMED = LED_14;
-	int PH_LED_HIGH = LED_15;
-
-	// Map zone functions to register
-	int MOISTURE_SENSOR_PWR = REG_01;
-	int PUMP_PWR = REG_02;
-	int PERI_PUMP = REG_03;
-	int MIXER_PWR = REG_04;
-	int PHDOWN_PWR = REG_05;
-	int PHUP_PWR = REG_06;
-	int SOLENOID_PWR = REG_07;
-	int LIGHT_PWR = REG_08;
-	int FAN_PWR = REG_09;
+	int REG_10 = 9;
+	int REG_11 = 10;
+	int REG_12 = 11;
+	int REG_13 = 12;
+	int REG_14 = 13;
+	int REG_15 = 14;
+	int REG_16 = 15;
+	int REG_17 = 16;
+	int REG_18 = 17;
+	int REG_19 = 18;
+	int REG_20 = 10;
+	int REG_21 = 20;
+	int REG_22 = 21;
+	int REG_23 = 22;
+	int REG_24 = 23;
 
 	// Map zone sensors to register
 	int MOISTURE_SENSOR;
