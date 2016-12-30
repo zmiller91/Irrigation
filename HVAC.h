@@ -22,7 +22,7 @@ protected:
 
 public:
 	HVAC();
-	HVAC(Conf* conf, Sensor* tempSensor, Component* fan, Component* heater);
+	HVAC(Context* m_ctx, Sensor* tempSensor, Component* fan, Component* heater);
 };
 
 #endif

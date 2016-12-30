@@ -3,9 +3,9 @@
 #include "Component.h"
 
 HVAC::HVAC() {}
-HVAC::HVAC(Conf* conf, Sensor* tempSensor, 
+HVAC::HVAC(Context* ctx, Sensor* tempSensor, 
 	Component* fan, Component* heater) :
-	Action(conf) {
+	Action(ctx) {
 
 	m_temperatureSensor = tempSensor;
 	m_fan = fan;
@@ -29,8 +29,8 @@ void HVAC::execute(unsigned long now) {
 		return;
 	}
 
-	int minTemp = m_conf->minTemp;
-	int maxTemp = m_conf->maxTemp;
+	int minTemp = m_ctx->minTemp;
+	int maxTemp = m_ctx->maxTemp;
 
 	// In a good spot, turn stuf off if the average is
 	// in the middle of the range

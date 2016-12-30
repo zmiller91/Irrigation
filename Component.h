@@ -7,12 +7,12 @@
 	#include "WProgram.h"
 #endif
 
-#include "Conf.h"
+#include "Context.h"
 
 class Component
 {
  protected:
-	 Conf* m_conf;
+	 Context* m_ctx;
 	 int m_state;
 	 unsigned long m_lastUpdate;
 	 int m_id;
@@ -22,7 +22,7 @@ class Component
 
  public:
 	Component();
-	Component(Conf*, int, int);
+	Component(Context*, int, int);
 	int m_register;
 	bool isOn();
 	int getState();

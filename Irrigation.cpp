@@ -4,10 +4,10 @@
 
 
 Irrigation::Irrigation() {}
-Irrigation::Irrigation(Conf* conf, Sensor* moistureSensor, TimedComponent* reseviorPump,
+Irrigation::Irrigation(Context* ctx, Sensor* moistureSensor, TimedComponent* reseviorPump,
 	TimedComponent* waterPump, TimedComponent* PP_1, TimedComponent* PP_2,
 	TimedComponent* PP_3, TimedComponent* PP_4, TimedComponent* mixer) :
-	Action(conf) {
+	Action(ctx) {
 
 	m_pauseDuration = 3000;
 	m_pauseUntil = 0;
@@ -38,36 +38,36 @@ void Irrigation::execute(unsigned long now) {
 	float average = m_moistureSensor->getAverage();
 
 	// If below the threshold, then irrigate
-	if (average < m_conf->minWater) {
+	if (average < m_ctx->minWater) {
 		unsigned long elapsed = 0;
 
 		// Resevior pump
-		m_reseviorPump->turnOn(now, m_conf->reseviorPumpOpen, elapsed);
-		elapsed += m_conf->reseviorPumpOpen;
+		m_reseviorPump->turnOn(now, m_ctx->reseviorPumpOpen, elapsed);
+		elapsed += m_ctx->reseviorPumpOpen;
 
 		// Peripump 1
-		m_PP_1->turnOn(now, m_conf->PP1Open, elapsed);
-		elapsed += m_conf->PP1Open;
+		m_PP_1->turnOn(now, m_ctx->PP1Open, elapsed);
+		elapsed += m_ctx->PP1Open;
 
 		// Peripump 2
-		m_PP_2->turnOn(now, m_conf->PP2Open, elapsed);
-		elapsed += m_conf->PP2Open;
+		m_PP_2->turnOn(now, m_ctx->PP2Open, elapsed);
+		elapsed += m_ctx->PP2Open;
 
 		// Peripump 3
-		m_PP_3->turnOn(now, m_conf->PP3Open, elapsed);
-		elapsed += m_conf->PP3Open;
+		m_PP_3->turnOn(now, m_ctx->PP3Open, elapsed);
+		elapsed += m_ctx->PP3Open;
 
 		// Peripump 4
-		m_PP_4->turnOn(now, m_conf->PP4Open, elapsed);
-		elapsed += m_conf->PP4Open;
+		m_PP_4->turnOn(now, m_ctx->PP4Open, elapsed);
+		elapsed += m_ctx->PP4Open;
 
 		// Mixer
-		m_mixer->turnOn(now, m_conf->mixerOn, elapsed);
-		elapsed += m_conf->mixerOn;
+		m_mixer->turnOn(now, m_ctx->mixerOn, elapsed);
+		elapsed += m_ctx->mixerOn;
 
 		// Water pump
-		m_waterPump->turnOn(now, m_conf->waterPumpOpen, elapsed);
-		elapsed += m_conf->waterPumpOpen;
+		m_waterPump->turnOn(now, m_ctx->waterPumpOpen, elapsed);
+		elapsed += m_ctx->waterPumpOpen;
 
 		// Pause for a bit
 		m_pauseUntil = now + elapsed + m_pauseDuration;

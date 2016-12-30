@@ -10,7 +10,7 @@
 #endif
 
 #include "Action.h"
-#include "Conf.h"
+#include "Context.h"
 #include "TimedComponent.h"
 #include "Sensor.h"
 
@@ -33,7 +33,7 @@ protected:
 
 public:
 	Irrigation();
-	Irrigation(Conf* conf, Sensor* moistureSensor, TimedComponent* reseviorPump,
+	Irrigation(Context* ctx, Sensor* moistureSensor, TimedComponent* reseviorPump,
 		TimedComponent* waterPump, TimedComponent* PP_1, TimedComponent* PP_2,
 		TimedComponent* PP_3, TimedComponent* PP_4, TimedComponent* mixer);
 };

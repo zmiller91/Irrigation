@@ -1,8 +1,8 @@
 #include "Action.h"
 
 Action::Action() {} 
-Action::Action(Conf* conf) {
-	m_conf = conf;
+Action::Action(Context* ctx) {
+	m_ctx = ctx;
 }
 
 void Action::run(unsigned long now) {

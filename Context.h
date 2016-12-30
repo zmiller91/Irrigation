@@ -1,5 +1,5 @@
-#ifndef _CONF_h
-#define _CONF_h
+#ifndef _CONTEXT_h
+#define _CONTEXT_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -7,10 +7,17 @@
 	#include "WProgram.h"
 #endif
 
-class Conf
+#include "ScheduledConf.h"
+
+class Context
 {
 
 public:
+
+	// User Overrides
+
+
+	// TimedComponents
 	unsigned long reseviorPumpOpen;
 	unsigned long waterPumpOpen;
 	unsigned long PP1Open;
@@ -18,15 +25,20 @@ public:
 	unsigned long PP3Open;
 	unsigned long PP4Open;
 	unsigned long mixerOn;
-	unsigned long lightOn;
-	unsigned long lightOff;
-	unsigned long pollOn;
-	unsigned long pollOff;
+
+	// ScheduledComponents
+	ScheduledConf* light;
+
+	// Sensors
 	int minWater;
 	int maxTemp;
 	int minTemp;
 
-	Conf();
+	// Actions
+	unsigned long pollOn;
+	unsigned long pollOff;
+
+	Context();
 
 	enum Constants
 	{
@@ -68,7 +80,10 @@ public:
 		CONF_MIN = 5001,
 		CONF_MAX = 5002,
 		CONF_TIME_ON = 5003,
-		CONF_TIME_OFF = 5004
+		CONF_TIME_OFF = 5004,
+		CONF_ON_FOR = 5006,
+		CONF_OFF_FOR = 5007,
+		CONF_START_ACTION = 5008
 	};
 
 };

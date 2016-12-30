@@ -1,3 +1,5 @@
+#include "ScheduledConf.h"
+#include "MutableConf.h"
 #include "Zone.h"
 
 unsigned long AI_00 = 0;
@@ -21,7 +23,7 @@ unsigned long DP12 = 12;
 unsigned long DP13 = 13;
 
 Zone ZONE;
-Conf* m_conf;
+Context* m_ctx;
 bool m_confReceived;
 char m_serialLine[16];
 
@@ -32,26 +34,26 @@ void setup() {
 	Serial.setTimeout(100);
 
 	m_confReceived = false;
-	m_conf = new Conf();
-	m_conf->lightOn = 3000;
-	m_conf->lightOff = 1000;
-	m_conf->minTemp = 300;
-	m_conf->maxTemp = 700;
+	m_ctx = new Context();
+	m_ctx->light->onFor = 3000;
+	m_ctx->light->offFor = 1000;
+	m_ctx->minTemp = 300;
+	m_ctx->maxTemp = 700;
 
-	m_conf->minWater = 500;
-	m_conf->reseviorPumpOpen = 3000;
-	m_conf->waterPumpOpen = 3000;
-	m_conf->PP1Open = 100;
-	m_conf->PP2Open = 100;
-	m_conf->PP3Open = 100;
-	m_conf->PP4Open = 100;
-	m_conf->mixerOn = 500;
+	m_ctx->minWater = 500;
+	m_ctx->reseviorPumpOpen = 3000;
+	m_ctx->waterPumpOpen = 3000;
+	m_ctx->PP1Open = 100;
+	m_ctx->PP2Open = 100;
+	m_ctx->PP3Open = 100;
+	m_ctx->PP4Open = 100;
+	m_ctx->mixerOn = 500;
 
-	m_conf->pollOn = 500;
-	m_conf->pollOff = 500;
+	m_ctx->pollOn = 500;
+	m_ctx->pollOff = 500;
 
 	Serial.begin(9600);
-	ZONE = Zone(m_conf, "Zone 1", DP12, DP11, DP10, AI_00, AI_01, AI_02, AI_03);
+	ZONE = Zone(m_ctx, "Zone 1", DP12, DP11, DP10, AI_00, AI_01, AI_02, AI_03);
 
 	Serial.println("test");
 	ZONE.allOff();
@@ -91,93 +93,93 @@ void update() {
 
 			switch (arduinoConstant) {
 
-			case Conf::TEMP_SENSOR_ID:
+			case Context::TEMP_SENSOR_ID:
 
-				if (action == Conf::CONF_MAX) {
-					m_conf->maxTemp = newVal;
+				if (action == Context::CONF_MAX) {
+					m_ctx->maxTemp = newVal;
 				}
-				else if (action == Conf::CONF_MIN) {
-					m_conf->minTemp = newVal;
+				else if (action == Context::CONF_MIN) {
+					m_ctx->minTemp = newVal;
 				}
-			case Conf::LIGHT_ID:
+			case Context::LIGHT_ID:
 
-				if (action == Conf::CONF_TIME_OFF) {
-					m_conf->lightOn = newVal;
+				if (action == Context::CONF_TIME_OFF) {
+					m_ctx->light->onFor = newVal;
 				}
-				else if (action == Conf::CONF_TIME_ON) {
-					m_conf->lightOff = newVal;
-				}
-
-				break;
-
-			case Conf::POLL_ID:
-				if (action == Conf::CONF_TIME_OFF) {
-					m_conf->pollOff = newVal;
-				}
-				else if (action == Conf::CONF_TIME_ON) {
-					m_conf->pollOn = newVal;
+				else if (action == Context::CONF_TIME_ON) {
+					m_ctx->light->offFor = newVal;
 				}
 
 				break;
 
-			case Conf::MOISTURE_SENSOR_ID:
-
-				if (action == Conf::CONF_MIN) {
-					m_conf->minWater = newVal;
+			case Context::POLL_ID:
+				if (action == Context::CONF_TIME_OFF) {
+					m_ctx->pollOff = newVal;
 				}
-
-			case Conf::RESEVIOR_PUMP_ID:
-
-				if (action == Conf::CONF_TIME_ON) {
-					m_conf->reseviorPumpOpen = newVal;
+				else if (action == Context::CONF_TIME_ON) {
+					m_ctx->pollOn = newVal;
 				}
 
 				break;
 
-			case Conf::WATER_PUMP_ID:
+			case Context::MOISTURE_SENSOR_ID:
 
-				if (action == Conf::CONF_TIME_ON) {
-					m_conf->waterPumpOpen = newVal;
+				if (action == Context::CONF_MIN) {
+					m_ctx->minWater = newVal;
+				}
+
+			case Context::RESEVIOR_PUMP_ID:
+
+				if (action == Context::CONF_TIME_ON) {
+					m_ctx->reseviorPumpOpen = newVal;
 				}
 
 				break;
 
-			case Conf::PP1_ID:
+			case Context::WATER_PUMP_ID:
 
-				if (action == Conf::CONF_TIME_ON) {
-					m_conf->PP1Open = newVal;
+				if (action == Context::CONF_TIME_ON) {
+					m_ctx->waterPumpOpen = newVal;
 				}
 
 				break;
 
-			case Conf::PP2_ID:
+			case Context::PP1_ID:
 
-				if (action == Conf::CONF_TIME_ON) {
-					m_conf->PP2Open = newVal;
+				if (action == Context::CONF_TIME_ON) {
+					m_ctx->PP1Open = newVal;
 				}
 
 				break;
 
-			case Conf::PP3_ID:
+			case Context::PP2_ID:
 
-				if (action == Conf::CONF_TIME_ON) {
-					m_conf->PP3Open = newVal;
+				if (action == Context::CONF_TIME_ON) {
+					m_ctx->PP2Open = newVal;
 				}
 
 				break;
 
-			case Conf::PP4_ID:
+			case Context::PP3_ID:
 
-				if (action == Conf::CONF_TIME_ON) {
-					m_conf->PP4Open = newVal;
+				if (action == Context::CONF_TIME_ON) {
+					m_ctx->PP3Open = newVal;
 				}
 
 				break;
 
-			case Conf::MIXER_ID:
+			case Context::PP4_ID:
 
-				if (action == Conf::CONF_TIME_ON) {
-					m_conf->mixerOn = newVal;
+				if (action == Context::CONF_TIME_ON) {
+					m_ctx->PP4Open = newVal;
+				}
+
+				break;
+
+			case Context::MIXER_ID:
+
+				if (action == Context::CONF_TIME_ON) {
+					m_ctx->mixerOn = newVal;
 				}
 
 				break;

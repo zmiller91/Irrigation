@@ -1,7 +1,6 @@
 #include "Component.h"
 #include "Sensor.h"
-#include "Root.h"
-#include "Conf.h"
+#include "Context.h"
 
 Sensor::Sensor() {}
 
@@ -9,10 +8,10 @@ Sensor::Sensor() {}
     A sensor is a component with added functionality. It has
 	the ability to take readings from physical components.
 */
-Sensor::Sensor(Conf* conf, int id, int analogPin):
+Sensor::Sensor(Context* ctx, int id, int analogPin):
 
 	// Construct super class
-	Component(conf, id, -1)
+	Component(ctx, id, -1)
 {
 	m_analogPin = analogPin;
 	m_duration = 1000;
@@ -70,6 +69,12 @@ void Sensor::execute(unsigned long now)
 		m_running = false;
 
 		m_average = m_sumPolls / m_numPolls;
+
+		// Serial.print("ID: "); Serial.print(m_id); 
+		// Serial.print(" Analog Pin: "); Serial.print(m_analogPin);
+		// Serial.print(" Average: "); Serial.print(m_average);
+		// Serial.print(" Reading: "); Serial.println(analogRead(m_analogPin));
+
 		m_hasAverage = true;
 
 		m_sumPolls = 0;

@@ -14,16 +14,15 @@
 class ScheduledComponent : public Component
 {
 protected:
-	unsigned long m_scheduledOn;
-	unsigned long m_scheduledOff;
+	ScheduledConf* m_schedule;
 	unsigned long m_delay;
 	unsigned long m_baseTime;
 	virtual void execute(unsigned long);
 
 public:
 	ScheduledComponent();
-	ScheduledComponent(Conf*, int, int, unsigned long, unsigned long);
-	void reschedule();
+	ScheduledComponent(Context*, ScheduledConf*, 
+		int, int, unsigned long, unsigned long);
 };
 
 #endif

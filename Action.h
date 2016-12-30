@@ -9,7 +9,7 @@
 	#include "WProgram.h"
 #endif
 
-#include "Conf.h"
+#include "Context.h"
 
 class Action 
 {
@@ -18,11 +18,11 @@ protected:
 	virtual void setup(unsigned long);
 	virtual void execute(unsigned long);
 	virtual void teardown(unsigned long);
-	Conf* m_conf;
+	Context* m_ctx;
 
 public:
 	Action();
-	Action(Conf*);
+	Action(Context*);
 	void run(unsigned long);
 };
 	

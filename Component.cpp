@@ -1,7 +1,6 @@
 #include "Component.h"
 #include "MemoryFree.h"
-#include "Root.h"
-#include "Conf.h"
+#include "Context.h"
 
 /*
     This class defines the functionality of a component. A 
@@ -9,9 +8,9 @@
 */
 Component::Component() {};
 
-Component::Component(Conf* conf, int id, int registr)
+Component::Component(Context* ctx, int id, int registr)
 {
-	m_conf = conf;
+	m_ctx = ctx;
 	m_id = id;
 	m_register = registr;
 	m_state = 0;

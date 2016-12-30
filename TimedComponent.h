@@ -24,7 +24,7 @@ protected:
 
 public:
 	TimedComponent();
-	TimedComponent(Conf*, int, int);
+	TimedComponent(Context*, int, int);
 	void turnOn(unsigned long now, unsigned long duration, 
 		unsigned long delay);
 };

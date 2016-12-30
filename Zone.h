@@ -12,7 +12,7 @@
 #include "TimedComponent.h"
 #include "Sensor.h"
 #include "BaseZone.h"
-#include "Conf.h"
+#include "Context.h"
 #include "HVAC.h"
 #include "Irrigation.h"
 
@@ -20,7 +20,7 @@ class Zone : public BaseZone
 {
  private:
 
-	 Conf* m_conf;
+	 Context* m_ctx;
 
 	 // Light
 	 ScheduledComponent* m_light;
@@ -50,7 +50,7 @@ class Zone : public BaseZone
  public:
 
 	 Zone();
-	 Zone(Conf*, String, int, int, int, int, int, int, int);
+	 Zone(Context*, String, int, int, int, int, int, int, int);
 	 void execute();
 	 void clearRegister();
 };
