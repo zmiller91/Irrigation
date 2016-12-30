@@ -8,10 +8,8 @@ Sensor::Sensor() {}
     A sensor is a component with added functionality. It has
 	the ability to take readings from physical components.
 */
-Sensor::Sensor(Context* ctx, int id, int analogPin):
-
-	// Construct super class
-	Component(ctx, id, -1)
+Sensor::Sensor(int id, int analogPin):
+	Component(id, -1)
 {
 	m_analogPin = analogPin;
 	m_duration = 1000;

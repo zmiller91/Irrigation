@@ -12,7 +12,6 @@
 class Component
 {
  protected:
-	 Context* m_ctx;
 	 int m_state;
 	 unsigned long m_lastUpdate;
 	 int m_id;
@@ -22,7 +21,7 @@ class Component
 
  public:
 	Component();
-	Component(Context*, int, int);
+	Component(int, int);
 	int m_register;
 	bool isOn();
 	int getState();

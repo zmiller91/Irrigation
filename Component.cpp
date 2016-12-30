@@ -8,9 +8,8 @@
 */
 Component::Component() {};
 
-Component::Component(Context* ctx, int id, int registr)
+Component::Component(int id, int registr)
 {
-	m_ctx = ctx;
 	m_id = id;
 	m_register = registr;
 	m_state = 0;

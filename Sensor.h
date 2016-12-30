@@ -24,7 +24,7 @@ class Sensor: public Component
 
  public:
 	 Sensor();
-	 Sensor(Context*, int, int);
+	 Sensor(int, int);
 	 bool hasAverage();
 	 float getAverage();
 	 virtual void setup(unsigned long);

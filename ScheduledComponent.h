@@ -21,7 +21,7 @@ protected:
 
 public:
 	ScheduledComponent();
-	ScheduledComponent(Context*, ScheduledConf*, 
+	ScheduledComponent(ScheduledConf*, 
 		int, int, unsigned long, unsigned long);
 };
 

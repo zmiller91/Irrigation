@@ -5,9 +5,9 @@ ScheduledComponent::ScheduledComponent() {
 	m_delay = 0;
 }
 
-ScheduledComponent::ScheduledComponent(Context* ctx, ScheduledConf* schedule, 
+ScheduledComponent::ScheduledComponent(ScheduledConf* schedule, 
 	int id, int registr, unsigned long now, unsigned long delay) :
-	Component(ctx, id, registr)
+	Component(id, registr)
 {
 	m_schedule = schedule;
 	m_baseTime = now;

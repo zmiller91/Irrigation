@@ -1,8 +1,8 @@
 #include "TimedComponent.h"
 
 TimedComponent::TimedComponent() {}
-TimedComponent::TimedComponent(Context* ctx, int id, int registr) :
-	Component(ctx, id, registr) {
+TimedComponent::TimedComponent(int id, int registr) :
+	Component(id, registr) {
 
 	m_running = false;
 	m_start = 0;
