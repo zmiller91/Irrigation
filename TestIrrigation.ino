@@ -1,5 +1,7 @@
+#include "limits.h"
+
 #include "ScheduledConf.h"
-#include "MutableConf.h"
+#include "Conf.h"
 #include "Zone.h"
 
 unsigned long AI_00 = 0;
@@ -65,15 +67,17 @@ void loop() {
 	//ZONE.allOff();
 	//ZONE.ledBlink(3000);
 	// ZONE.test();
-	update();
+
+	unsigned long now = millis();
+	update(now);
 	//if (m_confReceived)
 	if (true)
 	{
-		ZONE.execute();
+		ZONE.execute(now);
 	}
 }
 
-void update() {
+void update(unsigned long now) {
 //	Serial.println("updating");
 	String incomming = Serial.readString();
 	if (incomming.length() > 0) {
@@ -101,13 +105,48 @@ void update() {
 				else if (action == Context::CONF_MIN) {
 					m_ctx->minTemp = newVal;
 				}
+
 			case Context::LIGHT_ID:
 
-				if (action == Context::CONF_TIME_OFF) {
+				switch (action) {
+
+				case Context::CONF_TIME_ON:
 					m_ctx->light->onFor = newVal;
-				}
-				else if (action == Context::CONF_TIME_ON) {
+					break;
+				case Context::CONF_TIME_OFF:
 					m_ctx->light->offFor = newVal;
+					break;
+
+				case Context::CONF_ON_OFF: 
+
+					// Must be -1, 0, or 1
+					if (!(-1 <= newVal <= 1)) {
+						break;
+					}
+
+					// Reset
+					if (newVal == -1) {
+						m_ctx->light->m_override = Conf::Override::NOT_CHANGED;
+						break;
+					}
+
+					// Turn on or off
+					m_ctx->light->m_override = newVal == 1 ?
+						Conf::Override::ON : Conf::Override::OFF;
+					m_ctx->light->m_overrideUntil = ULONG_MAX;
+					break;
+
+				case Context::CONF_ON_FOR:
+					m_ctx->light->m_override = Conf::Override::ON;
+					m_ctx->light->m_overrideUntil = now + newVal;
+					break;
+
+				case Context::CONF_OFF_FOR:
+					m_ctx->light->m_override = Conf::Override::OFF;
+					m_ctx->light->m_overrideUntil = now + newVal;
+					break;
+					
+
 				}
 
 				break;

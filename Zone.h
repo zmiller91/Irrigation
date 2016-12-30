@@ -51,7 +51,7 @@ class Zone : public BaseZone
 
 	 Zone();
 	 Zone(Context*, String, int, int, int, int, int, int, int);
-	 void execute();
+	 void execute(unsigned long now);
 	 void clearRegister();
 };
 

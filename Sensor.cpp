@@ -8,8 +8,8 @@ Sensor::Sensor() {}
     A sensor is a component with added functionality. It has
 	the ability to take readings from physical components.
 */
-Sensor::Sensor(int id, int analogPin):
-	Component(id, -1)
+Sensor::Sensor(Conf* conf, int id, int analogPin):
+	Component(conf, id, -1)
 {
 	m_analogPin = analogPin;
 	m_duration = 1000;
@@ -47,7 +47,6 @@ void Sensor::setup(unsigned long now) {
 
 void Sensor::execute(unsigned long now)
 {
-
 	if (m_running)
 	{
 		// http://forum.arduino.cc/index.php?topic=256921.0

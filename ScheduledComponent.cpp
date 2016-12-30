@@ -7,7 +7,7 @@ ScheduledComponent::ScheduledComponent() {
 
 ScheduledComponent::ScheduledComponent(ScheduledConf* schedule, 
 	int id, int registr, unsigned long now, unsigned long delay) :
-	Component(id, registr)
+	Component(schedule, id, registr)
 {
 	m_schedule = schedule;
 	m_baseTime = now;
@@ -20,6 +20,11 @@ turn it off if it needs to be off
 */
 void ScheduledComponent::execute(unsigned long now)
 {
+	Component::execute(now);
+	if (m_override) {
+		return;
+	}
+
 	// delay has passed, turn  on
 	if (m_baseTime + m_delay <= now) {
 		m_delay = 0;

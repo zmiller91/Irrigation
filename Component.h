@@ -11,8 +11,12 @@
 
 class Component
 {
+private:
+	int m_state;
+
  protected:
-	 int m_state;
+	 Conf* m_conf;
+	 bool m_override;
 	 unsigned long m_lastUpdate;
 	 int m_id;
 	 virtual void setup(unsigned long);
@@ -21,7 +25,7 @@ class Component
 
  public:
 	Component();
-	Component(int, int);
+	Component(Conf* conf, int, int);
 	int m_register;
 	bool isOn();
 	int getState();

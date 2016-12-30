@@ -11,9 +11,9 @@
 
 class Conf {
 public:
-	enum States { ON, OFF, NOT_CHANGED };
-	States state;
-	unsigned long holdStateFor;
+	enum Override { ON, OFF, NOT_CHANGED };
+	Override m_override;
+	unsigned long m_overrideUntil;
 
 	Conf();
 };

@@ -1,6 +1,6 @@
 #include "Conf.h"
 
 Conf::Conf() {
-	state = States::NOT_CHANGED;
-	holdStateFor = 0;
+	m_override = Override::NOT_CHANGED;
+	m_overrideUntil = 0;
 }

@@ -1,8 +1,8 @@
 #include "TimedComponent.h"
 
 TimedComponent::TimedComponent() {}
-TimedComponent::TimedComponent(int id, int registr) :
-	Component(id, registr) {
+TimedComponent::TimedComponent(Conf* conf, int id, int registr) :
+	Component(conf, id, registr) {
 
 	m_running = false;
 	m_start = 0;
@@ -22,6 +22,18 @@ void TimedComponent::turnOn(unsigned long now,
 }
 
 void TimedComponent::execute(unsigned long now) {
+
+	// Return if the user is overriding
+	Component::execute(now);
+	if (m_override) {
+		return;
+	}
+
+	// If the component isn't running, it has no business
+	// being on. This can happen in an override
+	if (!m_running && getState() == 1) {
+		setState(0);
+	}
 
 	if (m_running) {
 

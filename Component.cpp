@@ -8,12 +8,14 @@
 */
 Component::Component() {};
 
-Component::Component(int id, int registr)
+Component::Component(Conf* conf, int id, int registr)
 {
+	m_conf = conf;
 	m_id = id;
 	m_register = registr;
 	m_state = 0;
 	m_lastUpdate = 0;
+	m_override = false;
 }
 
 bool Component::isOn() {
@@ -32,12 +34,15 @@ int Component::getState()
 }
 
 /*
-    Set the state of the component, either on or off
+    Set the state of the component, either on or off. 
+	Ignore the request if an override is in progress.
 */
 void Component::setState(int state)
 {
-	m_state = state;
-	m_lastUpdate = millis();
+	if (!m_override) {
+		m_state = state;
+		m_lastUpdate = millis();
+	}
 }
 
 /*
@@ -71,6 +76,32 @@ void Component::run(unsigned long now) {
 	teardown(now);
 }
 
+
+void Component::execute(unsigned long now) {
+
+	// If there is an override, then override
+	switch (m_conf->m_override) {
+	case Conf::Override::ON:
+		m_override = true;
+		m_state = 1;
+		if (m_conf->m_overrideUntil < now) {
+			m_override = false;
+			m_conf->m_override = Conf::Override::NOT_CHANGED;
+		}
+		break;
+	case Conf::Override::OFF:
+		m_override = true;
+		m_state = 0;
+		if (m_conf->m_overrideUntil < now) {
+			m_override = false;
+			m_conf->m_override = Conf::Override::NOT_CHANGED;
+		}
+		break;
+	case Conf::Override::NOT_CHANGED:
+		m_override = false;
+		break;
+	}
+}
+
 void Component::setup(unsigned long now) {}
-void Component::execute(unsigned long now) {}
 void Component::teardown(unsigned long now) {}
