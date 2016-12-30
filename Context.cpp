@@ -4,4 +4,11 @@
 
 Context::Context() {
 	light = new ScheduledConf();
+	reseviorPump = new TimedConf();
+	waterPump = new TimedConf();
+	PP_1 = new TimedConf();
+	PP_2 = new TimedConf();
+	PP_3 = new TimedConf();
+	PP_4 = new TimedConf();
+	mixer = new TimedConf();
 }

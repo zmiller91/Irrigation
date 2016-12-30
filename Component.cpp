@@ -15,7 +15,7 @@ Component::Component(Conf* conf, int id, int registr)
 	m_register = registr;
 	m_state = 0;
 	m_lastUpdate = 0;
-	m_override = false;
+	m_overriding = false;
 }
 
 bool Component::isOn() {
@@ -39,7 +39,7 @@ int Component::getState()
 */
 void Component::setState(int state)
 {
-	if (!m_override) {
+	if (!m_overriding) {
 		m_state = state;
 		m_lastUpdate = millis();
 	}
@@ -82,23 +82,23 @@ void Component::execute(unsigned long now) {
 	// If there is an override, then override
 	switch (m_conf->m_override) {
 	case Conf::Override::ON:
-		m_override = true;
+		m_overriding = true;
 		m_state = 1;
 		if (m_conf->m_overrideUntil < now) {
-			m_override = false;
+			m_overriding = false;
 			m_conf->m_override = Conf::Override::NOT_CHANGED;
 		}
 		break;
 	case Conf::Override::OFF:
-		m_override = true;
+		m_overriding = true;
 		m_state = 0;
 		if (m_conf->m_overrideUntil < now) {
-			m_override = false;
+			m_overriding = false;
 			m_conf->m_override = Conf::Override::NOT_CHANGED;
 		}
 		break;
 	case Conf::Override::NOT_CHANGED:
-		m_override = false;
+		m_overriding = false;
 		break;
 	}
 }

@@ -1,4 +1,6 @@
-#include "limits.h"
+#include "UserInteraction.h"
+#include "SensorConf.h"
+#include "TimedConf.h"
 
 #include "ScheduledConf.h"
 #include "Conf.h"
@@ -42,14 +44,14 @@ void setup() {
 	m_ctx->minTemp = 300;
 	m_ctx->maxTemp = 700;
 
-	m_ctx->minWater = 500;
-	m_ctx->reseviorPumpOpen = 3000;
-	m_ctx->waterPumpOpen = 3000;
-	m_ctx->PP1Open = 100;
-	m_ctx->PP2Open = 100;
-	m_ctx->PP3Open = 100;
-	m_ctx->PP4Open = 100;
-	m_ctx->mixerOn = 500;
+	m_ctx->minWater = 500;	
+	m_ctx->reseviorPump->onFor = 3000;
+	m_ctx->waterPump->onFor = 3000;
+	m_ctx->PP_1->onFor = 100;
+	m_ctx->PP_2->onFor = 100;
+	m_ctx->PP_3->onFor = 100;
+	m_ctx->PP_4->onFor = 100;
+	m_ctx->mixer->onFor = 500;
 
 	m_ctx->pollOn = 500;
 	m_ctx->pollOff = 500;
@@ -107,48 +109,8 @@ void update(unsigned long now) {
 				}
 
 			case Context::LIGHT_ID:
-
-				switch (action) {
-
-				case Context::CONF_TIME_ON:
-					m_ctx->light->onFor = newVal;
-					break;
-				case Context::CONF_TIME_OFF:
-					m_ctx->light->offFor = newVal;
-					break;
-
-				case Context::CONF_ON_OFF: 
-
-					// Must be -1, 0, or 1
-					if (!(-1 <= newVal <= 1)) {
-						break;
-					}
-
-					// Reset
-					if (newVal == -1) {
-						m_ctx->light->m_override = Conf::Override::NOT_CHANGED;
-						break;
-					}
-
-					// Turn on or off
-					m_ctx->light->m_override = newVal == 1 ?
-						Conf::Override::ON : Conf::Override::OFF;
-					m_ctx->light->m_overrideUntil = ULONG_MAX;
-					break;
-
-				case Context::CONF_ON_FOR:
-					m_ctx->light->m_override = Conf::Override::ON;
-					m_ctx->light->m_overrideUntil = now + newVal;
-					break;
-
-				case Context::CONF_OFF_FOR:
-					m_ctx->light->m_override = Conf::Override::OFF;
-					m_ctx->light->m_overrideUntil = now + newVal;
-					break;
-					
-
-				}
-
+				UserInteraction::configureSchedule(m_ctx->light, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->light, now, action, newVal);
 				break;
 
 			case Context::POLL_ID:
@@ -167,60 +129,41 @@ void update(unsigned long now) {
 					m_ctx->minWater = newVal;
 				}
 
+				break;
+
 			case Context::RESEVIOR_PUMP_ID:
-
-				if (action == Context::CONF_TIME_ON) {
-					m_ctx->reseviorPumpOpen = newVal;
-				}
-
+				UserInteraction::configureTimer(m_ctx->reseviorPump, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->reseviorPump, now, action, newVal);
 				break;
 
 			case Context::WATER_PUMP_ID:
-
-				if (action == Context::CONF_TIME_ON) {
-					m_ctx->waterPumpOpen = newVal;
-				}
-
+				UserInteraction::configureTimer(m_ctx->waterPump, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->waterPump, now, action, newVal);
 				break;
 
 			case Context::PP1_ID:
-
-				if (action == Context::CONF_TIME_ON) {
-					m_ctx->PP1Open = newVal;
-				}
-
+				UserInteraction::configureTimer(m_ctx->PP_1, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->PP_1, now, action, newVal);
 				break;
 
 			case Context::PP2_ID:
-
-				if (action == Context::CONF_TIME_ON) {
-					m_ctx->PP2Open = newVal;
-				}
-
+				UserInteraction::configureTimer(m_ctx->PP_2, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->PP_2, now, action, newVal);
 				break;
 
 			case Context::PP3_ID:
-
-				if (action == Context::CONF_TIME_ON) {
-					m_ctx->PP3Open = newVal;
-				}
-
+				UserInteraction::configureTimer(m_ctx->PP_3, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->PP_3, now, action, newVal);
 				break;
 
 			case Context::PP4_ID:
-
-				if (action == Context::CONF_TIME_ON) {
-					m_ctx->PP4Open = newVal;
-				}
-
+				UserInteraction::configureTimer(m_ctx->PP_4, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->PP_4, now, action, newVal);
 				break;
 
 			case Context::MIXER_ID:
-
-				if (action == Context::CONF_TIME_ON) {
-					m_ctx->mixerOn = newVal;
-				}
-
+				UserInteraction::configureTimer(m_ctx->mixer, action, newVal);
+				UserInteraction::overrideOnOff(m_ctx->mixer, now, action, newVal);
 				break;
 			}
 		}

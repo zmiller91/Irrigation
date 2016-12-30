@@ -126,11 +126,14 @@
     <ClInclude Include="HVAC.h" />
     <ClInclude Include="Irrigation.h" />
     <ClInclude Include="MemoryFree.h" />
-    <ClInclude Include="MutableConf.h" />
+    <ClInclude Include="Conf.h" />
     <ClInclude Include="ScheduledComponent.h" />
     <ClInclude Include="ScheduledConf.h" />
     <ClInclude Include="Sensor.h" />
+    <ClInclude Include="SensorConf.h" />
     <ClInclude Include="TimedComponent.h" />
+    <ClInclude Include="TimedConf.h" />
+    <ClInclude Include="UserInteraction.h" />
     <ClInclude Include="Zone.h" />
     <ClInclude Include="__vm\.TestIrrigation.vsarduino.h" />
   </ItemGroup>
@@ -142,11 +145,14 @@
     <ClCompile Include="HVAC.cpp" />
     <ClCompile Include="Irrigation.cpp" />
     <ClCompile Include="MemoryFree.cpp" />
-    <ClCompile Include="MutableConf.cpp" />
+    <ClCompile Include="Conf.cpp" />
     <ClCompile Include="ScheduledComponent.cpp" />
     <ClCompile Include="ScheduledConf.cpp" />
     <ClCompile Include="Sensor.cpp" />
+    <ClCompile Include="SensorConf.cpp" />
     <ClCompile Include="TimedComponent.cpp" />
+    <ClCompile Include="TimedConf.cpp" />
+    <ClCompile Include="UserInteraction.cpp" />
     <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

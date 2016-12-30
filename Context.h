@@ -8,6 +8,7 @@
 #endif
 
 #include "ScheduledConf.h"
+#include "TimedConf.h"
 
 class Context
 {
@@ -18,13 +19,13 @@ public:
 
 
 	// TimedComponents
-	unsigned long reseviorPumpOpen;
-	unsigned long waterPumpOpen;
-	unsigned long PP1Open;
-	unsigned long PP2Open;
-	unsigned long PP3Open;
-	unsigned long PP4Open;
-	unsigned long mixerOn;
+	TimedConf* reseviorPump;
+	TimedConf* waterPump;
+	TimedConf* PP_1;
+	TimedConf* PP_2;
+	TimedConf* PP_3;
+	TimedConf* PP_4;
+	TimedConf* mixer;
 
 	// ScheduledComponents
 	ScheduledConf* light;
@@ -76,14 +77,14 @@ public:
 		MEM_USAGE_ID = 4000,
 
 		// Configuration action types
-		CONF_ON_OFF = 5000,
-		CONF_MIN = 5001,
-		CONF_MAX = 5002,
-		CONF_TIME_ON = 5003,
-		CONF_TIME_OFF = 5004,
-		CONF_ON_FOR = 5006,
-		CONF_OFF_FOR = 5007,
-		CONF_START_ACTION = 5008
+		CONF_MIN = 5000,
+		CONF_MAX = 5001,
+		CONF_TIME_ON = 5002,
+		CONF_TIME_OFF = 5003,
+		OVERRIDE_ON_OFF = 5004,
+		OVERRIDE_ON_FOR = 5005,
+		OVERRIDE_OFF_FOR = 5006,
+		OVERRIDE_SET_ACTION = 5007
 	};
 
 };

@@ -42,32 +42,32 @@ void Irrigation::execute(unsigned long now) {
 		unsigned long elapsed = 0;
 
 		// Resevior pump
-		m_reseviorPump->turnOn(now, m_ctx->reseviorPumpOpen, elapsed);
-		elapsed += m_ctx->reseviorPumpOpen;
+		m_reseviorPump->turnOn(now, m_ctx->reseviorPump->onFor, elapsed);
+		elapsed += m_ctx->reseviorPump->onFor;
 
 		// Peripump 1
-		m_PP_1->turnOn(now, m_ctx->PP1Open, elapsed);
-		elapsed += m_ctx->PP1Open;
+		m_PP_1->turnOn(now, m_ctx->PP_1->onFor, elapsed);
+		elapsed += m_ctx->PP_1->onFor;
 
 		// Peripump 2
-		m_PP_2->turnOn(now, m_ctx->PP2Open, elapsed);
-		elapsed += m_ctx->PP2Open;
+		m_PP_2->turnOn(now, m_ctx->PP_2->onFor, elapsed);
+		elapsed += m_ctx->PP_2->onFor;
 
 		// Peripump 3
-		m_PP_3->turnOn(now, m_ctx->PP3Open, elapsed);
-		elapsed += m_ctx->PP3Open;
+		m_PP_3->turnOn(now, m_ctx->PP_3->onFor, elapsed);
+		elapsed += m_ctx->PP_3->onFor;
 
 		// Peripump 4
-		m_PP_4->turnOn(now, m_ctx->PP4Open, elapsed);
-		elapsed += m_ctx->PP4Open;
+		m_PP_4->turnOn(now, m_ctx->PP_4->onFor, elapsed);
+		elapsed += m_ctx->PP_4->onFor;
 
 		// Mixer
-		m_mixer->turnOn(now, m_ctx->mixerOn, elapsed);
-		elapsed += m_ctx->mixerOn;
+		m_mixer->turnOn(now, m_ctx->mixer->onFor, elapsed);
+		elapsed += m_ctx->mixer->onFor;
 
 		// Water pump
-		m_waterPump->turnOn(now, m_ctx->waterPumpOpen, elapsed);
-		elapsed += m_ctx->waterPumpOpen;
+		m_waterPump->turnOn(now, m_ctx->waterPump->onFor, elapsed);
+		elapsed += m_ctx->waterPump->onFor;
 
 		// Pause for a bit
 		m_pauseUntil = now + elapsed + m_pauseDuration;

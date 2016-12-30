@@ -25,6 +25,12 @@
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{b9904be7-7caa-4a0a-9c20-7c599529791a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Configuration">
+      <UniqueIdentifier>{e300eaf6-a145-4f41-9871-798e433cf8b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Configuration">
+      <UniqueIdentifier>{716d425e-b9b8-4aee-a475-5c3b936881a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="TestIrrigation.ino" />
@@ -40,12 +46,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MemoryFree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Root.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Conf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Action.h">
@@ -69,7 +69,22 @@
     <ClInclude Include="Irrigation.h">
       <Filter>Header Files\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="Irrigation2.h">
+    <ClInclude Include="Context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScheduledConf.h">
+      <Filter>Header Files\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="Conf.h">
+      <Filter>Header Files\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorConf.h">
+      <Filter>Header Files\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="TimedConf.h">
+      <Filter>Header Files\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInteraction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -81,12 +96,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MemoryFree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Root.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Conf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Action.cpp">
@@ -110,7 +119,22 @@
     <ClCompile Include="Irrigation.cpp">
       <Filter>Source Files\Actions</Filter>
     </ClCompile>
-    <ClCompile Include="Irrigation2.cpp">
+    <ClCompile Include="Context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScheduledConf.cpp">
+      <Filter>Source Files\Configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="Conf.cpp">
+      <Filter>Source Files\Configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorConf.cpp">
+      <Filter>Source Files\Configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="TimedConf.cpp">
+      <Filter>Source Files\Configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInteraction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

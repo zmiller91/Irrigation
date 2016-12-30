@@ -25,7 +25,7 @@ void TimedComponent::execute(unsigned long now) {
 
 	// Return if the user is overriding
 	Component::execute(now);
-	if (m_override) {
+	if (m_overriding) {
 		return;
 	}
 

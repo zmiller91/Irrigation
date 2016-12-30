@@ -16,7 +16,7 @@ private:
 
  protected:
 	 Conf* m_conf;
-	 bool m_override;
+	 bool m_overriding;
 	 unsigned long m_lastUpdate;
 	 int m_id;
 	 virtual void setup(unsigned long);

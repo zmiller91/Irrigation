@@ -1,7 +1,7 @@
-// ScheduledConf.h
+// TimedConf.h
 
-#ifndef _SCHEDULEDCONF_h
-#define _SCHEDULEDCONF_h
+#ifndef _TIMEDCONF_h
+#define _TIMEDCONF_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -11,11 +11,10 @@
 
 #include "Conf.h"
 
-class ScheduledConf : public Conf {
+class TimedConf : public Conf {
 public:
 	unsigned long onFor;
-	unsigned long offFor;
-	ScheduledConf();
+	TimedConf();
 };
 
 #endif

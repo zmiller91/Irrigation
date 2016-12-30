@@ -22,13 +22,13 @@ Zone::Zone(Context* ctx, String name, int data, int latch, int clock, int moistu
 
 	// Irrigation
 	m_moisture = new Sensor(new Conf(), Context::MOISTURE_SENSOR_ID, MOISTURE_SENSOR);
-	m_reseviorPump = new TimedComponent(new Conf(), Context::RESEVIOR_PUMP_ID, REG_04);
-	m_PP_1 = new TimedComponent(new Conf(), Context::PP1_ID, REG_05);
-	m_PP_2 = new TimedComponent(new Conf(), Context::PP2_ID, REG_06);
-	m_PP_3 = new TimedComponent(new Conf(), Context::PP3_ID, REG_07);
-	m_PP_4 = new TimedComponent(new Conf(), Context::PP4_ID, REG_08);
-	m_mixer = new TimedComponent(new Conf(), Context::MIXER_ID, REG_09);
-	m_waterPump = new TimedComponent(new Conf(), Context::WATER_PUMP_ID, REG_10);
+	m_reseviorPump = new TimedComponent(m_ctx->reseviorPump, Context::RESEVIOR_PUMP_ID, REG_04);
+	m_PP_1 = new TimedComponent(m_ctx->PP_1, Context::PP1_ID, REG_05);
+	m_PP_2 = new TimedComponent(m_ctx->PP_2, Context::PP2_ID, REG_06);
+	m_PP_3 = new TimedComponent(m_ctx->PP_3, Context::PP3_ID, REG_07);
+	m_PP_4 = new TimedComponent(m_ctx->PP_4, Context::PP4_ID, REG_08);
+	m_mixer = new TimedComponent(m_ctx->mixer, Context::MIXER_ID, REG_09);
+	m_waterPump = new TimedComponent(m_ctx->waterPump, Context::WATER_PUMP_ID, REG_10);
 
 	// Actions
 	m_hvac = new HVAC(m_ctx, m_temp, m_fan, m_heater);
@@ -54,6 +54,7 @@ void Zone::clearRegister()
 */
 void Zone::execute(unsigned long now)
 {
+
 	Component* components[] = { m_light, m_temp, m_fan, m_heater, 
 		m_reseviorPump, m_waterPump, m_PP_1, m_PP_2, m_PP_3, 
 		m_PP_4, m_mixer, m_moisture };
