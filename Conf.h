@@ -9,15 +9,13 @@
 	#include "WProgram.h"
 #endif
 
-
-
-class MutableConf {
+class Conf {
 public:
 	enum States { ON, OFF, NOT_CHANGED };
 	States state;
 	unsigned long holdStateFor;
 
-	MutableConf();
+	Conf();
 };
 
 #endif

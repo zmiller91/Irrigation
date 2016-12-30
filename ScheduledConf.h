@@ -9,9 +9,9 @@
 	#include "WProgram.h"
 #endif
 
-#include "MutableConf.h"
+#include "Conf.h"
 
-class ScheduledConf : public MutableConf {
+class ScheduledConf : public Conf {
 public:
 	unsigned long onFor;
 	unsigned long offFor;

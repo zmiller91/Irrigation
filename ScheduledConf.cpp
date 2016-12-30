@@ -1,8 +1,7 @@
 #include "ScheduledConf.h"
 
-
 ScheduledConf::ScheduledConf() :
-	MutableConf() {
+	Conf() {
 	onFor = 0;
 	offFor = 0;
 }
