@@ -57,9 +57,9 @@ void setup() {
 	m_ctx->pollOff = 500;
 
 	Serial.begin(9600);
-	ZONE = Zone(m_ctx, "Zone 1", DP12, DP11, DP10, AI_00, AI_01, AI_02, AI_03);
+	ZONE = Zone(m_ctx, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03);
 
-	Serial.println("test");
+	Serial.println("Finshed setup");
 	ZONE.allOff();
 	//ZONE.test();
 }
@@ -68,7 +68,7 @@ void loop() {
 	//ZONE.allOn(); 
 	//ZONE.allOff();
 	//ZONE.ledBlink(3000);
-	// ZONE.test();
+	 //ZONE.test();
 
 	unsigned long now = millis();
 	update(now);

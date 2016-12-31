@@ -10,19 +10,12 @@
 class BaseZone
 {
 protected:
-	int NUM_BITS = 24;
-	int m_bitmask[24];
-	void putToRegister();
-	void ledOneByOne(int);
-	int NUM_REGISTERS = 3;
-	String m_name;
+	int NUM_REGISTERS = 2;
+	int NUM_BITS = 16;
+	int m_bitmask[16];
 
-	// Each zone contains 3 daisy chained 8-bit shift registers
-	// and 15 LED status lights.  The LEDs can be mapped to bits 9-23 
-	// in the chained register. Bits 0-8 in the register  are available 
-	// for use. These first 24 entries in the zone represent it's register. 
-	// To use, set the bit value of each of these register entries 
-	// to either turn on or off an action in the zone.
+	// Create register variables for easy
+	// access
 
 	int REG_01 = 0;
 	int REG_02 = 1;
@@ -40,14 +33,6 @@ protected:
 	int REG_14 = 13;
 	int REG_15 = 14;
 	int REG_16 = 15;
-	int REG_17 = 16;
-	int REG_18 = 17;
-	int REG_19 = 18;
-	int REG_20 = 10;
-	int REG_21 = 20;
-	int REG_22 = 21;
-	int REG_23 = 22;
-	int REG_24 = 23;
 
 	// Map zone sensors to register
 	int MOISTURE_SENSOR;
@@ -57,6 +42,10 @@ protected:
 	int DATA_PIN;
 	int LATCH_PIN;
 	int CLOCK_PIN;
+
+	String m_name;
+	void putToRegister();
+	void ledOneByOne(int);
 
 public:
 	BaseZone();
