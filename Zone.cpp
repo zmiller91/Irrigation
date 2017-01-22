@@ -16,8 +16,8 @@ Zone::Zone(Context* ctx, String name, int data, int latch, int clock, int moistu
 	m_light = new ScheduledComponent(m_ctx->light, Context::LIGHT_ID, REG_02, millis(), 0);
 
 	// HVAC
-	m_heater = new Component(new Conf(), Context::HEATER_ID, REG_10);
-	m_fan = new Component(new Conf(), Context::FAN_ID, REG_11);
+	m_heater = new Component(m_ctx->heater, Context::HEATER_ID, REG_10);
+	m_fan = new Component(m_ctx->fan, Context::FAN_ID, REG_11);
 	m_temp = new Sensor(new Conf(), Context::TEMP_SENSOR_ID, TEMP_SENSOR);
 
 	// Irrigation

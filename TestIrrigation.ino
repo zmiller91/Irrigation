@@ -165,6 +165,16 @@ void update(unsigned long now) {
 				UserInteraction::configureTimer(m_ctx->mixer, action, newVal);
 				UserInteraction::overrideOnOff(m_ctx->mixer, now, action, newVal);
 				break;
+
+			case Context::FAN_ID:
+				UserInteraction::overrideOnOff(m_ctx->fan, now, action, newVal);
+				break;
+
+			case Context::HEATER_ID:
+
+				UserInteraction::overrideOnOff(m_ctx->heater, now, action, newVal);
+				break;
+				
 			}
 		}
 		else if (val1 && atoi(val1) == -1) {

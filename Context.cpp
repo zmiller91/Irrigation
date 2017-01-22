@@ -11,4 +11,6 @@ Context::Context() {
 	PP_3 = new TimedConf();
 	PP_4 = new TimedConf();
 	mixer = new TimedConf();
+	heater = new Conf();
+	fan = new Conf();
 }

@@ -26,6 +26,8 @@ public:
 	TimedConf* PP_3;
 	TimedConf* PP_4;
 	TimedConf* mixer;
+	Conf* heater;
+	Conf* fan;
 
 	// ScheduledComponents
 	ScheduledConf* light;
@@ -74,6 +76,7 @@ public:
 		TEMP_SENSOR_ID = 3002,
 
 		// Admin/Debug/Other IDs.  All these IDs start with 4000
+
 		MEM_USAGE_ID = 4000,
 
 		// Configuration action types
