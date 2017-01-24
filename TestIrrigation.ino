@@ -83,10 +83,8 @@ void update(unsigned long now) {
 //	Serial.println("updating");
 	String incomming = Serial.readString();
 	if (incomming.length() > 0) {
-		Serial.print("Received: ");
-		Serial.println(incomming); 
 
-		char charArray[16];//as 1 char space for null is also required
+		char charArray[20];//as 1 char space for null is also required
 		strcpy(charArray, incomming.c_str());
 
 		char* val1 = strtok(charArray, ":");
@@ -99,7 +97,7 @@ void update(unsigned long now) {
 
 			switch (arduinoConstant) {
 
-			case Context::TEMP_SENSOR_ID:
+			case Context::HVAC_ID:
 
 				if (action == Context::CONF_MAX) {
 					m_ctx->maxTemp = newVal;
@@ -108,6 +106,7 @@ void update(unsigned long now) {
 					m_ctx->minTemp = newVal;
 				}
 
+			case Context::ILLUMINATE_ID:
 			case Context::LIGHT_ID:
 				UserInteraction::configureSchedule(m_ctx->light, action, newVal);
 				UserInteraction::overrideOnOff(m_ctx->light, now, action, newVal);
@@ -123,7 +122,7 @@ void update(unsigned long now) {
 
 				break;
 
-			case Context::MOISTURE_SENSOR_ID:
+			case Context::IRRIGATE_ID:
 
 				if (action == Context::CONF_MIN) {
 					m_ctx->minWater = newVal;
@@ -180,6 +179,9 @@ void update(unsigned long now) {
 		else if (val1 && atoi(val1) == -1) {
 			m_confReceived = true;
 		}
+
+		Serial.print("Received: ");
+		Serial.println(incomming);
 
 		//delete val1, val2, val3;
 	}

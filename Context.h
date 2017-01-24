@@ -69,6 +69,7 @@ public:
 		POLL_ID = 2000,
 		IRRIGATE_ID = 2001,
 		ILLUMINATE_ID = 2002,
+		HVAC_ID = 2003,
 
 		// Sensor IDs. All sensor IDs start with 3000
 		MOISTURE_SENSOR_ID = 3000,
