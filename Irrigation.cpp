@@ -28,17 +28,21 @@ void Irrigation::execute(unsigned long now) {
 
 	// If there is no data in the moisture sensor or the action is already
 	// running, or paused, then do nothing
-	if (!m_ctx->irrigation->touched && (!m_moistureSensor->hasAverage() ||
-		running(components, sizeof(components)) ||
-		m_pauseUntil > now)) {
+	bool isRunning = running(components, sizeof(components));
+	if (!m_ctx->irrigation->touched && 
+		(!m_moistureSensor->hasAverage() || isRunning || m_pauseUntil > now)) {
 		return;
 	}
 
-	// Check the moisture sensor
-	float average = m_moistureSensor->getAverage();
+	// If this was touched and it's running, then do nothing
+	if (m_ctx->irrigation->touched && isRunning) {
+		m_ctx->irrigation->touched = false;
+		return;
+	}
 
-	// If below the threshold, then irrigate
-	if (m_ctx->irrigation->touched || average < m_ctx->irrigation->minimum) {
+	// Check the moisture sensor. If below the threshold, then irrigate
+	float average = m_moistureSensor->getAverage();
+	if (average < m_ctx->irrigation->minimum || m_ctx->irrigation->touched) {
 		m_ctx->irrigation->touched = false;
 		unsigned long elapsed = 0;
 
