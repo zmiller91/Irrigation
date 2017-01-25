@@ -9,6 +9,14 @@
 	#include "WProgram.h"
 #endif
 
+#include "Conf.h"
+
+class SensorConf : public Conf {
+public:
+	int minimum;
+	int maximum;
+	SensorConf();
+};
 
 #endif
 

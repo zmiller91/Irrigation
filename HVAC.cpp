@@ -29,8 +29,8 @@ void HVAC::execute(unsigned long now) {
 		return;
 	}
 
-	int minTemp = m_ctx->minTemp;
-	int maxTemp = m_ctx->maxTemp;
+	int minTemp = m_ctx->hvac->minimum;
+	int maxTemp = m_ctx->hvac->maximum;
 
 	// In a good spot, turn stuf off if the average is
 	// in the middle of the range
@@ -68,4 +68,9 @@ void HVAC::execute(unsigned long now) {
 			m_heater->setState(1);
 		}
 	}
+}
+
+void HVAC::turnOff() {
+	m_fan->setState(0);
+	m_heater->setState(0);
 }

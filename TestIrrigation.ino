@@ -1,3 +1,4 @@
+#include "Illumination.h"
 #include "UserInteraction.h"
 #include "SensorConf.h"
 #include "TimedConf.h"
@@ -41,10 +42,10 @@ void setup() {
 	m_ctx = new Context();
 	m_ctx->light->onFor = 3000;
 	m_ctx->light->offFor = 1000;
-	m_ctx->minTemp = 300;
-	m_ctx->maxTemp = 700;
+	m_ctx->hvac->minimum = 300;
+	m_ctx->hvac->maximum = 700;
 
-	m_ctx->minWater = 500;	
+	m_ctx->irrigation->minimum = 500;	
 	m_ctx->reseviorPump->onFor = 3000;
 	m_ctx->waterPump->onFor = 3000;
 	m_ctx->PP_1->onFor = 100;
@@ -98,17 +99,16 @@ void update(unsigned long now) {
 			switch (arduinoConstant) {
 
 			case Context::HVAC_ID:
-
-				if (action == Context::CONF_MAX) {
-					m_ctx->maxTemp = newVal;
-				}
-				else if (action == Context::CONF_MIN) {
-					m_ctx->minTemp = newVal;
-				}
+				UserInteraction::overrideOnOff(m_ctx->hvac, now, action, newVal);
+				UserInteraction::configureSensor(m_ctx->hvac, action, newVal);
+				break;
 
 			case Context::ILLUMINATE_ID:
-			case Context::LIGHT_ID:
+				UserInteraction::overrideOnOff(m_ctx->illumination, now, action, newVal);
 				UserInteraction::configureSchedule(m_ctx->light, action, newVal);
+				break;
+
+			case Context::LIGHT_ID:
 				UserInteraction::overrideOnOff(m_ctx->light, now, action, newVal);
 				break;
 
@@ -124,10 +124,13 @@ void update(unsigned long now) {
 
 			case Context::IRRIGATE_ID:
 
-				if (action == Context::CONF_MIN) {
-					m_ctx->minWater = newVal;
+				if (action == Context::CONF_TOUCH) {
+					UserInteraction::touch(m_ctx->irrigation);
+					break;
 				}
 
+				UserInteraction::overrideOnOff(m_ctx->irrigation, now, action, newVal);
+				UserInteraction::configureSensor(m_ctx->irrigation, action, newVal);
 				break;
 
 			case Context::RESEVIOR_PUMP_ID:

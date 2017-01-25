@@ -31,7 +31,9 @@ Zone::Zone(Context* ctx, String name, int data, int latch, int clock, int moistu
 	m_waterPump = new TimedComponent(m_ctx->waterPump, Context::WATER_PUMP_ID, REG_01);
 
 	// Actions
+
 	m_hvac = new HVAC(m_ctx, m_temp, m_fan, m_heater);
+	m_illumination = new Illumination(m_ctx, m_light);
 	m_irrigation =  new Irrigation(m_ctx, m_moisture, m_reseviorPump, 
 		m_waterPump, m_PP_1, m_PP_2, m_PP_3, m_PP_4, m_mixer);
 }
@@ -59,18 +61,34 @@ void Zone::execute(unsigned long now)
 		m_reseviorPump, m_waterPump, m_PP_1, m_PP_2, m_PP_3, 
 		m_PP_4, m_mixer, m_moisture };
 
-	Action* actions[] = { m_hvac, m_irrigation };
-
 	// Run the actions
+	Action* actions[] =  {m_irrigation, m_hvac, m_illumination};
+	Conf* actionConf[] = { m_ctx->irrigation, m_ctx->hvac, m_ctx->illumination };
 	for (Action* a : actions) {
 		a->run(now);
 	}
 
-	// Run the components and upate the bitmask
+	// Run the components
 	for (Component* c : components) {
 		c->run(now);
+	}
+
+	// Turn off any actions
+	int i = 0;
+	for (Action* act : actions) {
+		if (actionConf[i]->m_override == Conf::Override::OFF) {
+			act->turnOff();
+		}
+
+		i++;
+	}
+
+	// Override any components and update the bitmask
+	for (Component* c : components) {
+		c->override(now);
 		m_bitmask[c->m_register] = c->getState();
 	}
+	
 	
 	// Update the register
 	putToRegister();

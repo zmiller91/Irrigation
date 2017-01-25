@@ -13,6 +13,7 @@
 #include "Context.h"
 #include "TimedComponent.h"
 #include "Sensor.h"
+#include "SensorConf.h"
 
 class Irrigation : public Action {
 
@@ -36,6 +37,7 @@ public:
 	Irrigation(Context* ctx, Sensor* moistureSensor, TimedComponent* reseviorPump,
 		TimedComponent* waterPump, TimedComponent* PP_1, TimedComponent* PP_2,
 		TimedComponent* PP_3, TimedComponent* PP_4, TimedComponent* mixer);
+	virtual void turnOff();
 };
 
 #endif

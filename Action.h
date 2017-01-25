@@ -24,6 +24,7 @@ public:
 	Action();
 	Action(Context*);
 	void run(unsigned long);
+	virtual void turnOff();
 };
 	
 

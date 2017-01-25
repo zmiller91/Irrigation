@@ -14,3 +14,4 @@ void Action::run(unsigned long now) {
 void Action::setup(unsigned long now) {}
 void Action::execute(unsigned long now) {}
 void Action::teardown(unsigned long now){}
+void Action::turnOff() {}

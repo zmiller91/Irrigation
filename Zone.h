@@ -15,6 +15,7 @@
 #include "Context.h"
 #include "HVAC.h"
 #include "Irrigation.h"
+#include "Illumination.h"
 
 class Zone : public BaseZone
 {
@@ -43,6 +44,7 @@ class Zone : public BaseZone
 	 // Actions
 	 HVAC* m_hvac;
 	 Irrigation* m_irrigation;
+	 Illumination* m_illumination;
 
  protected:
 	 String m_name;

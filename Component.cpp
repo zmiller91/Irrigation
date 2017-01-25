@@ -77,7 +77,7 @@ void Component::run(unsigned long now) {
 }
 
 
-void Component::execute(unsigned long now) {
+void Component::override(unsigned long now) {
 
 	// If there is an override, then override
 	switch (m_conf->m_override) {
@@ -105,3 +105,4 @@ void Component::execute(unsigned long now) {
 
 void Component::setup(unsigned long now) {}
 void Component::teardown(unsigned long now) {}
+void Component::execute(unsigned long now) {}

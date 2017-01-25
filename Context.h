@@ -9,14 +9,12 @@
 
 #include "ScheduledConf.h"
 #include "TimedConf.h"
+#include "SensorConf.h"
 
 class Context
 {
 
 public:
-
-	// User Overrides
-
 
 	// TimedComponents
 	TimedConf* reseviorPump;
@@ -32,14 +30,12 @@ public:
 	// ScheduledComponents
 	ScheduledConf* light;
 
-	// Sensors
-	int minWater;
-	int maxTemp;
-	int minTemp;
-
-	// Actions
+	// Actions Conf
 	unsigned long pollOn;
 	unsigned long pollOff;
+	SensorConf* irrigation;
+	SensorConf* hvac;
+	Conf* illumination;
 
 	Context();
 
@@ -88,7 +84,8 @@ public:
 		OVERRIDE_ON_OFF = 5004,
 		OVERRIDE_ON_FOR = 5005,
 		OVERRIDE_OFF_FOR = 5006,
-		OVERRIDE_SET_ACTION = 5007
+		OVERRIDE_SET_ACTION = 5007,
+		CONF_TOUCH = 5008
 	};
 
 };

@@ -12,6 +12,7 @@
 #include "Action.h"
 #include "Sensor.h"
 #include "Component.h"
+#include "SensorConf.h"
 
 class HVAC : public Action {
 protected:
@@ -23,6 +24,7 @@ protected:
 public:
 	HVAC();
 	HVAC(Context* m_ctx, Sensor* tempSensor, Component* fan, Component* heater);
+	virtual void turnOff();
 };
 
 #endif

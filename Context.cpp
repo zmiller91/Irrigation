@@ -13,4 +13,7 @@ Context::Context() {
 	mixer = new TimedConf();
 	heater = new Conf();
 	fan = new Conf();
+	hvac = new SensorConf();
+	irrigation = new SensorConf();
+	illumination = new Conf();
 }

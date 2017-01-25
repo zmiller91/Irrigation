@@ -23,14 +23,14 @@ Irrigation::Irrigation(Context* ctx, Sensor* moistureSensor, TimedComponent* res
 }
 
 void Irrigation::execute(unsigned long now) {
-	TimedComponent* components[] = { m_reseviorPump, m_waterPump, m_PP_1, 
+	TimedComponent* components[] = { m_reseviorPump, m_waterPump, m_PP_1,
 		m_PP_2, m_PP_3, m_PP_4, m_mixer };
 
 	// If there is no data in the moisture sensor or the action is already
 	// running, or paused, then do nothing
-	if (!m_moistureSensor->hasAverage() ||
+	if (!m_ctx->irrigation->touched && (!m_moistureSensor->hasAverage() ||
 		running(components, sizeof(components)) ||
-		m_pauseUntil > now) {
+		m_pauseUntil > now)) {
 		return;
 	}
 
@@ -38,7 +38,8 @@ void Irrigation::execute(unsigned long now) {
 	float average = m_moistureSensor->getAverage();
 
 	// If below the threshold, then irrigate
-	if (average < m_ctx->minWater) {
+	if (m_ctx->irrigation->touched || average < m_ctx->irrigation->minimum) {
+		m_ctx->irrigation->touched = false;
 		unsigned long elapsed = 0;
 
 		// Resevior pump
@@ -80,4 +81,12 @@ bool Irrigation::running(TimedComponent* components[], int size) {
 		running = running || components[i]->isOn();
 	}
 	return running;
+}
+
+void Irrigation::turnOff() {
+	TimedComponent* components[] = { m_reseviorPump, m_waterPump, m_PP_1,
+		m_PP_2, m_PP_3, m_PP_4, m_mixer };
+	for (Component* c : components) {
+		c->setState(0);
+	}
 }

@@ -20,7 +20,6 @@ turn it off if it needs to be off
 */
 void ScheduledComponent::execute(unsigned long now)
 {
-	Component::execute(now);
 
 	// delay has passed, turn  on
 	if (m_baseTime + m_delay <= now) {

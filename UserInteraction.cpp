@@ -3,6 +3,10 @@
 #include "UserInteraction.h"
 #include "Context.h"
 
+void UserInteraction::touch(Conf* conf) {
+	conf->touched = true;
+}
+
 void UserInteraction::overrideOnOff(Conf* conf, unsigned long now, int action, 
 	unsigned long newVal) {
 
@@ -58,4 +62,16 @@ void UserInteraction::configureTimer(TimedConf* conf, int action,
 		conf->onFor = newVal;
 	}
 
+}
+
+void UserInteraction::configureSensor(SensorConf* conf, int action, unsigned long newVal) {
+
+	switch (action) {
+	case Context::CONF_MIN:
+		conf->minimum = newVal;
+		break;
+	case Context::CONF_MAX:
+		conf->maximum = newVal;
+		break;
+	}
 }

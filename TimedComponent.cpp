@@ -24,7 +24,7 @@ void TimedComponent::turnOn(unsigned long now,
 void TimedComponent::execute(unsigned long now) {
 
 	// Return if the user is overriding
-	Component::execute(now);
+	Component::override(now);
 	if (m_overriding) {
 		return;
 	}

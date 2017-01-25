@@ -11,6 +11,7 @@
 
 #include "Conf.h"
 #include "ScheduledConf.h"
+#include "SensorConf.h"
 #include "TimedConf.h"
 
 class UserInteraction {
@@ -18,12 +19,10 @@ public:
 	static void overrideOnOff(Conf* conf, unsigned long now, int action,
 		unsigned long newVal);
 
+	static void touch(Conf* conf);
 	static void configureSchedule(ScheduledConf* conf, int action, unsigned long newVal);
-
 	static void configureTimer(TimedConf* conf, int action, unsigned long newVal);
-
-	static void configureSensor(Conf* conf, unsigned long now, int action,
-		unsigned long newVal);
+	static void configureSensor(SensorConf* conf, int action, unsigned long newVal);
 };
 
 #endif
