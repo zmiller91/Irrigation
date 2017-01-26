@@ -15,3 +15,4 @@ void Action::setup(unsigned long now) {}
 void Action::execute(unsigned long now) {}
 void Action::teardown(unsigned long now){}
 void Action::turnOff() {}
+void Action::touch(unsigned long now) {}

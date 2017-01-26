@@ -25,6 +25,7 @@ public:
 	Action(Context*);
 	void run(unsigned long);
 	virtual void turnOff();
+	virtual void touch(unsigned long now);
 };
 	
 

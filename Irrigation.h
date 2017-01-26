@@ -16,6 +16,8 @@
 #include "SensorConf.h"
 
 class Irrigation : public Action {
+private: 
+	void start(unsigned long now);
 
 protected:
 	Sensor* m_moistureSensor;
@@ -38,6 +40,7 @@ public:
 		TimedComponent* waterPump, TimedComponent* PP_1, TimedComponent* PP_2,
 		TimedComponent* PP_3, TimedComponent* PP_4, TimedComponent* mixer);
 	virtual void turnOff();
+	virtual void touch(unsigned long now);
 };
 
 #endif

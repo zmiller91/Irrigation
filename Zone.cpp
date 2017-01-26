@@ -61,11 +61,17 @@ void Zone::execute(unsigned long now)
 		m_reseviorPump, m_waterPump, m_PP_1, m_PP_2, m_PP_3, 
 		m_PP_4, m_mixer, m_moisture };
 
-	// Run the actions
 	Action* actions[] =  {m_irrigation, m_hvac, m_illumination};
 	Conf* actionConf[] = { m_ctx->irrigation, m_ctx->hvac, m_ctx->illumination };
-	for (Action* a : actions) {
-		a->run(now);
+
+	// Run the actions if they're not overridden
+	int i = 0;
+	for (Action* act : actions) {
+		if (actionConf[i]->m_override != Conf::Override::OFF) {
+			act->run(now);
+		}
+
+		i++;
 	}
 
 	// Run the components
@@ -73,10 +79,17 @@ void Zone::execute(unsigned long now)
 		c->run(now);
 	}
 
-	// Turn off any actions
-	int i = 0;
+	i = 0;
 	for (Action* act : actions) {
-		if (actionConf[i]->m_override == Conf::Override::OFF) {
+
+		// Touched
+		if (actionConf[i]->touched) {
+			act->touch(now);
+			actionConf[i]->touched = false;
+		}
+
+		// Overridden
+		else if (actionConf[i]->m_override == Conf::Override::OFF) {
 			act->turnOff();
 		}
 
@@ -88,7 +101,6 @@ void Zone::execute(unsigned long now)
 		c->override(now);
 		m_bitmask[c->m_register] = c->getState();
 	}
-	
 	
 	// Update the register
 	putToRegister();
