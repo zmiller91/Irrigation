@@ -16,4 +16,5 @@ Context::Context() {
 	hvac = new SensorConf();
 	irrigation = new SensorConf();
 	illumination = new Conf();
+	poll = new ScheduledConf();
 }

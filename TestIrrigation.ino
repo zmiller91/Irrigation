@@ -1,3 +1,7 @@
+
+#include "limits.h"
+
+#include "Poll.h"
 #include "Illumination.h"
 #include "UserInteraction.h"
 #include "SensorConf.h"
@@ -40,22 +44,22 @@ void setup() {
 
 	m_confReceived = false;
 	m_ctx = new Context();
-	m_ctx->light->onFor = 3000;
-	m_ctx->light->offFor = 1000;
-	m_ctx->hvac->minimum = 300;
-	m_ctx->hvac->maximum = 700;
+	m_ctx->light->onFor = 0;
+	m_ctx->light->offFor = 0;
+	m_ctx->hvac->minimum = 0;
+	m_ctx->hvac->maximum = 1025;
 
-	m_ctx->irrigation->minimum = 500;	
-	m_ctx->reseviorPump->onFor = 3000;
-	m_ctx->waterPump->onFor = 3000;
-	m_ctx->PP_1->onFor = 100;
-	m_ctx->PP_2->onFor = 100;
-	m_ctx->PP_3->onFor = 100;
-	m_ctx->PP_4->onFor = 100;
-	m_ctx->mixer->onFor = 500;
+	m_ctx->irrigation->minimum = 1025;	
+	m_ctx->reseviorPump->onFor = 0;
+	m_ctx->waterPump->onFor = 0;
+	m_ctx->PP_1->onFor = 0;
+	m_ctx->PP_2->onFor = 0;
+	m_ctx->PP_3->onFor = 0;
+	m_ctx->PP_4->onFor = 0;
+	m_ctx->mixer->onFor = 0;
 
-	m_ctx->pollOn = 500;
-	m_ctx->pollOff = 500;
+	m_ctx->poll->onFor = 0;
+	m_ctx->poll->offFor = ULONG_MAX;
 
 	Serial.begin(9600);
 	ZONE = Zone(m_ctx, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03);
@@ -81,7 +85,6 @@ void loop() {
 }
 
 void update(unsigned long now) {
-//	Serial.println("updating");
 	String incomming = Serial.readString();
 	if (incomming.length() > 0) {
 
@@ -113,13 +116,7 @@ void update(unsigned long now) {
 				break;
 
 			case Context::POLL_ID:
-				if (action == Context::CONF_TIME_OFF) {
-					m_ctx->pollOff = newVal;
-				}
-				else if (action == Context::CONF_TIME_ON) {
-					m_ctx->pollOn = newVal;
-				}
-
+				UserInteraction::configureSchedule(m_ctx->poll, action, newVal);
 				break;
 
 			case Context::IRRIGATE_ID:

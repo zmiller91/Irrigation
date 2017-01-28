@@ -31,8 +31,7 @@ public:
 	ScheduledConf* light;
 
 	// Actions Conf
-	unsigned long pollOn;
-	unsigned long pollOff;
+	ScheduledConf* poll;
 	SensorConf* irrigation;
 	SensorConf* hvac;
 	Conf* illumination;
@@ -71,6 +70,7 @@ public:
 		MOISTURE_SENSOR_ID = 3000,
 		PHOTORESISTOR_ID = 3001,
 		TEMP_SENSOR_ID = 3002,
+		HUMIDITY_SENSOR_ID = 3003,
 
 		// Admin/Debug/Other IDs.  All these IDs start with 4000
 

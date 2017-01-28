@@ -16,6 +16,7 @@
 #include "HVAC.h"
 #include "Irrigation.h"
 #include "Illumination.h"
+#include "Poll.h"
 
 class Zone : public BaseZone
 {
@@ -27,12 +28,10 @@ class Zone : public BaseZone
 	 ScheduledComponent* m_light;
 
 	 // HVAC
-	 Sensor* m_temp;
 	 Component* m_heater;
 	 Component* m_fan;
 
 	 // Irrigation
-	 Sensor* m_moisture;
 	 TimedComponent* m_reseviorPump;
 	 TimedComponent* m_waterPump;
 	 TimedComponent* m_PP_1;
@@ -45,6 +44,13 @@ class Zone : public BaseZone
 	 HVAC* m_hvac;
 	 Irrigation* m_irrigation;
 	 Illumination* m_illumination;
+	 Poll* m_poll;
+
+	 // Sensors
+	 Sensor* m_temp;
+	 Sensor* m_moisture;
+	 Sensor* m_photoresistor;
+	 Sensor* m_humidity;
 
  protected:
 	 String m_name;

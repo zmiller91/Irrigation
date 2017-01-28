@@ -31,7 +31,9 @@ Zone::Zone(Context* ctx, String name, int data, int latch, int clock, int moistu
 	m_waterPump = new TimedComponent(m_ctx->waterPump, Context::WATER_PUMP_ID, REG_01);
 
 	// Actions
-
+	m_photoresistor = new Sensor(new Conf(), Context::PHOTORESISTOR_ID, PHOTORESISTOR);
+	m_humidity = new Sensor(new Conf(), Context::HUMIDITY_SENSOR_ID, HUMIDITY_SENSOR);
+	m_poll = new Poll(m_ctx, m_moisture, m_temp, m_photoresistor, m_humidity);
 	m_hvac = new HVAC(m_ctx, m_temp, m_fan, m_heater);
 	m_illumination = new Illumination(m_ctx, m_light);
 	m_irrigation =  new Irrigation(m_ctx, m_moisture, m_reseviorPump, 
@@ -61,8 +63,8 @@ void Zone::execute(unsigned long now)
 		m_reseviorPump, m_waterPump, m_PP_1, m_PP_2, m_PP_3, 
 		m_PP_4, m_mixer, m_moisture };
 
-	Action* actions[] =  {m_irrigation, m_hvac, m_illumination};
-	Conf* actionConf[] = { m_ctx->irrigation, m_ctx->hvac, m_ctx->illumination };
+	Action* actions[] =  {m_irrigation, m_hvac, m_illumination, m_poll};
+	Conf* actionConf[] = { m_ctx->irrigation, m_ctx->hvac, m_ctx->illumination, m_ctx->poll };
 
 	// Run the actions if they're not overridden
 	int i = 0;
