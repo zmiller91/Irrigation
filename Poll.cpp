@@ -19,9 +19,10 @@ void Poll::execute(unsigned long now) {
 		output(Context::MOISTURE_SENSOR_ID, m_moisture->getAverage());
 		output(Context::TEMP_SENSOR_ID, m_temperature->getAverage());
 		output(Context::PHOTORESISTOR_ID, m_light->getAverage());
+		output(Context::HUMIDITY_SENSOR_ID, m_humidity->getAverage());
 	}
 
-	// Been on for long enough, rest the base time
+	// Been on for long enough, reset the base time
 	if (m_baseTime + m_schedule->onFor + m_schedule->offFor <= now) {
 		m_baseTime = now;
 	}
