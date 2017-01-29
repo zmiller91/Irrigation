@@ -29,9 +29,9 @@ void Poll::execute(unsigned long now) {
 
 void Poll::output(int sensor, int value) {
 
-	Serial.print(Context::POLL_ID);
-	Serial.print(":");
 	Serial.print(sensor);
+	Serial.print(":");
+	Serial.print(Context::POLL_ID);
 	Serial.print(":");
 	Serial.println(value);
 }
