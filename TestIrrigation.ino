@@ -59,7 +59,7 @@ void setup() {
 	m_ctx->mixer->onFor = 0;
 
 	m_ctx->poll->onFor = 0;
-	m_ctx->poll->offFor = ULONG_MAX;
+	m_ctx->poll->offFor = 360000;
 
 	Serial.begin(9600);
 	ZONE = Zone(m_ctx, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03);
