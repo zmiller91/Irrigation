@@ -67,27 +67,23 @@ void Zone::execute(unsigned long now)
 	Conf* actionConf[] = { m_ctx->irrigation, m_ctx->hvac, m_ctx->illumination, m_ctx->poll };
 
 	// Remember the states
-	int i = 0;
-	for (Component* c : components) {
-		originalState[i] = c->getState();
-		i++;
+	for (int c = 0; c < sizeof(components); c++) {
+		originalState[c] = components[c]->getState();
 	}
 
 	// Run the actions if they're not overridden
-	i = 0;
+	int i = 0;
 	for (Action* act : actions) {
 		if (actionConf[i]->m_override != Conf::Override::OFF) {
-			act->run(now);
+			actions[i]->run(now);
 		}
 
 		i++;
 	}
 
 	// Run the components
-	i = 0;
 	for (Component* c : components) {
 		c->run(now);
-		i++;
 	}
 
 	// Override the actions
