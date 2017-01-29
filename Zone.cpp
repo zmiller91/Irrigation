@@ -58,16 +58,23 @@ void Zone::clearRegister()
 */
 void Zone::execute(unsigned long now)
 {
-
-	Component* components[] = { m_light, m_temp, m_fan, m_heater, 
+	Component* components[] = { m_light, m_fan, m_heater, 
 		m_reseviorPump, m_waterPump, m_PP_1, m_PP_2, m_PP_3, 
-		m_PP_4, m_mixer, m_moisture };
+		m_PP_4, m_mixer, m_moisture, m_temp, m_humidity, m_photoresistor};
+	int originalState[sizeof(components)];
 
 	Action* actions[] =  {m_irrigation, m_hvac, m_illumination, m_poll};
 	Conf* actionConf[] = { m_ctx->irrigation, m_ctx->hvac, m_ctx->illumination, m_ctx->poll };
 
-	// Run the actions if they're not overridden
+	// Remember the states
 	int i = 0;
+	for (Component* c : components) {
+		originalState[i] = c->getState();
+		i++;
+	}
+
+	// Run the actions if they're not overridden
+	i = 0;
 	for (Action* act : actions) {
 		if (actionConf[i]->m_override != Conf::Override::OFF) {
 			act->run(now);
@@ -77,10 +84,13 @@ void Zone::execute(unsigned long now)
 	}
 
 	// Run the components
+	i = 0;
 	for (Component* c : components) {
 		c->run(now);
+		i++;
 	}
 
+	// Override the actions
 	i = 0;
 	for (Action* act : actions) {
 
@@ -99,9 +109,16 @@ void Zone::execute(unsigned long now)
 	}
 
 	// Override any components and update the bitmask
+	i = 0;
 	for (Component* c : components) {
+
 		c->override(now);
+		if (c->getState() != originalState[i]) {
+			c->notifyState();
+		}
+
 		m_bitmask[c->m_register] = c->getState();
+		i++;
 	}
 	
 	// Update the register

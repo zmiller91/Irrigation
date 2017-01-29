@@ -103,6 +103,14 @@ void Component::override(unsigned long now) {
 	}
 }
 
+void Component::notifyState() {
+	Serial.print(m_id);
+	Serial.print(":");
+	Serial.print(Context::ON_OFF);
+	Serial.print(":");
+	Serial.println(m_state);
+}
+
 void Component::setup(unsigned long now) {}
 void Component::teardown(unsigned long now) {}
 void Component::execute(unsigned long now) {}

@@ -34,6 +34,7 @@ private:
 	int getId();
 	void run(unsigned long);
 	void override(unsigned long);
+	void notifyState();
 };
 
 
