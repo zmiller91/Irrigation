@@ -16,10 +16,10 @@ void Poll::execute(unsigned long now) {
 
 	// Been off for long enough, poll
 	if (m_baseTime + m_ctx->poll->offFor <= now) {
-		output(Context::MOISTURE_SENSOR_ID, m_moisture->getAverage());
-		output(Context::TEMP_SENSOR_ID, m_temperature->getAverage());
-		output(Context::PHOTORESISTOR_ID, m_light->getAverage());
-		output(Context::HUMIDITY_SENSOR_ID, m_humidity->getAverage());
+		output(m_moisture);
+		output(m_temperature);
+		output(m_light);
+		output(m_humidity);
 	}
 
 	// Been on for long enough, reset the base time
@@ -28,11 +28,12 @@ void Poll::execute(unsigned long now) {
 	}
 }
 
-void Poll::output(int sensor, int value) {
-
-	Serial.print(sensor);
-	Serial.print(":");
-	Serial.print(Context::POLL_ID);
-	Serial.print(":");
-	Serial.println(value);
+void Poll::output(Sensor* sensor) {
+	if (sensor->hasAverage()) {
+		Serial.print(sensor->getId());
+		Serial.print(":");
+		Serial.print(Context::POLL_ID);
+		Serial.print(":");
+		Serial.println(sensor->getAverage());
+	}
 }

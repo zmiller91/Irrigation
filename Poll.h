@@ -21,7 +21,7 @@ private:
 	Sensor* m_temperature;
 	Sensor* m_light;
 	Sensor* m_humidity;
-	void output(int sensor, int value);
+	void output(Sensor* sensor);
 
 
 public:

@@ -3,6 +3,7 @@
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
+
 #else
 	#include "WProgram.h"
 #endif
@@ -13,7 +14,7 @@ class Sensor: public Component
 {
  protected:
 	 int m_analogPin;
-	 float m_numPolls;
+	 int m_numPolls;
 	 float m_sumPolls;
 	 float m_average;
 	 bool m_running;
@@ -21,10 +22,11 @@ class Sensor: public Component
 	 unsigned long m_start;
 	 unsigned long m_duration;
 	 virtual void execute(unsigned long);
+	 virtual float read(int pin);
 
  public:
 	 Sensor();
-	 Sensor(Conf*, int, int);
+	 Sensor(Conf* conf, int id, int analogPin);
 	 bool hasAverage();
 	 float getAverage();
 	 virtual void setup(unsigned long);

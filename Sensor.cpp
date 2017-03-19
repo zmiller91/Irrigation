@@ -54,9 +54,9 @@ void Sensor::execute(unsigned long now)
 		// sensors can influence the next sensors readings if the electrical
 		// impedence is great enough. Therefore, read it twice, ignoring the first
 
-		analogRead(m_analogPin);
-		int read = analogRead(m_analogPin);
-		m_sumPolls += read;
+		read(m_analogPin);
+		float val = read(m_analogPin);
+		m_sumPolls += val;
 		m_numPolls += 1;
 	}
 
@@ -64,7 +64,6 @@ void Sensor::execute(unsigned long now)
 	{
 		m_start = now;
 		m_running = false;
-
 		m_average = m_sumPolls / m_numPolls;
 
 		// Serial.print("ID: "); Serial.print(m_id); 
@@ -78,4 +77,9 @@ void Sensor::execute(unsigned long now)
 		m_numPolls = 0;
 
 	}
+}
+
+float Sensor::read(int pin)
+{
+	return (float) analogRead(pin);
 }

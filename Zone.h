@@ -17,6 +17,7 @@
 #include "Irrigation.h"
 #include "Illumination.h"
 #include "Poll.h"
+#include "DHTSensor.h"
 
 class Zone : public BaseZone
 {
@@ -47,10 +48,10 @@ class Zone : public BaseZone
 	 Poll* m_poll;
 
 	 // Sensors
-	 Sensor* m_temp;
+	 DHTSensor* m_temp;
 	 Sensor* m_moisture;
 	 Sensor* m_photoresistor;
-	 Sensor* m_humidity;
+	 DHTSensor* m_humidity;
 
  protected:
 	 String m_name;

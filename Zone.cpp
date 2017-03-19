@@ -18,7 +18,7 @@ Zone::Zone(Context* ctx, String name, int data, int latch, int clock, int moistu
 	// HVAC
 	m_heater = new Component(m_ctx->heater, Context::HEATER_ID, REG_10);
 	m_fan = new Component(m_ctx->fan, Context::FAN_ID, REG_11);
-	m_temp = new Sensor(new Conf(), Context::TEMP_SENSOR_ID, TEMP_SENSOR);
+	m_temp = new DHTSensor(new Conf(), Context::TEMP_SENSOR_ID, TEMP_SENSOR, TEMPERATURE);
 
 	// Irrigation
 	m_moisture = new Sensor(new Conf(), Context::MOISTURE_SENSOR_ID, MOISTURE_SENSOR);
@@ -32,7 +32,7 @@ Zone::Zone(Context* ctx, String name, int data, int latch, int clock, int moistu
 
 	// Actions
 	m_photoresistor = new Sensor(new Conf(), Context::PHOTORESISTOR_ID, PHOTORESISTOR);
-	m_humidity = new Sensor(new Conf(), Context::HUMIDITY_SENSOR_ID, HUMIDITY_SENSOR);
+	m_humidity = new DHTSensor(new Conf(), Context::HUMIDITY_SENSOR_ID, HUMIDITY_SENSOR, HUMIDITY);
 	m_poll = new Poll(m_ctx, m_moisture, m_temp, m_photoresistor, m_humidity);
 	m_hvac = new HVAC(m_ctx, m_temp, m_fan, m_heater);
 	m_illumination = new Illumination(m_ctx, m_light);

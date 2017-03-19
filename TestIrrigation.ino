@@ -1,4 +1,6 @@
 
+#include "DHTSensor.h"
+#include "dht.h"
 #include "limits.h"
 
 #include "Poll.h"
@@ -35,7 +37,6 @@ Zone ZONE;
 Context* m_ctx;
 bool m_confReceived;
 char m_serialLine[16];
-
 void setup() {
 
 	// This is blocking, keep it as small
@@ -62,7 +63,7 @@ void setup() {
 	m_ctx->poll->offFor = 360000;
 
 	Serial.begin(9600);
-	ZONE = Zone(m_ctx, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, AI_01, AI_03);
+	ZONE = Zone(m_ctx, "Zone 1", DP12, DP11, DP10, AI_00, AI_02, DP2, DP2);
 
 	Serial.println("Finshed setup");
 	ZONE.allOff();
